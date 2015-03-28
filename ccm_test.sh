@@ -2,7 +2,7 @@
 
 . "${HOME}/.config/clean-chroot-manager.conf"
 
-if [[ -z "" ]]; then
+if [[ -z "${PKGDIR}" ]]; then
   PKGDIR="${HOME}/Documents/informatica/AUR/personal"
 fi
 
