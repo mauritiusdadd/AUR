@@ -131,6 +131,10 @@ case $1 in
   libsnl-svn)
     test_libsnl_svn
     ;;
+  all)
+    test_calculix
+    test_vtk_git
+    ;;
 esac
 
 # vim: ft=sh syn=sh
