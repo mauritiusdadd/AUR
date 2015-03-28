@@ -2,10 +2,13 @@
 
 . "${HOME}/.config/clean-chroot-manager.conf"
 
-TMPDIR="/mnt/CACHE/AUR"
-PKGDIR="${HOME}/Documents/informatica/AUR/personal"
-AURHLP="/usr/bin/cower -ddf"
+if [[ -z "" ]]; then
+  PKGDIR="${HOME}/Documents/informatica/AUR/personal"
+fi
+
 LOGFILE="${PKGDIR}/ccm.log"
+TMPDIR="/mnt/CACHE/AUR"
+AURHLP="/usr/bin/cower -ddf"
 CCM_BLD_64="sudo /usr/bin/ccm64 S"
 CCM_BLD_32="sudo /usr/bin/ccm32 S"
 CCM_CLR_64="sudo /usr/bin/ccm64 d"
