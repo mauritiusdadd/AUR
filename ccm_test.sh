@@ -2,6 +2,7 @@
 
 . "${HOME}/.config/clean-chroot-manager.conf"
 
+
 if [[ -z "${PKGDIR}" ]]; then
   PKGDIR="${HOME}/Documents/informatica/AUR/personal"
 fi
@@ -20,7 +21,18 @@ TESTER="$(whoami)"
 
 totee()
 {
-  tee -a "${LOGFILE}"
+  if [[ -z "${LOGONLY}" ]]; then
+    tee -a "${LOGFILE}"
+  else
+    tee -a "${LOGFILE}" &> /dev/null
+  fi
+}
+
+smsg()
+{
+  # Make sure to use an empty LOGONLY so this message is
+  # always displayed.
+  echo "[STATUS] ==> $1 - x${arch} : $2" | LOGONLY="" totee
 }
 
 msg()
@@ -60,6 +72,7 @@ __ccm_build()
   elif [[ "x${arch}" == "x32" ]]; then
     $CCM_BLD_32 | totee
   fi
+  return "${PIPESTATUS[0]}"
 }
 
 install_dep()
@@ -76,7 +89,13 @@ ccm_build()
 {
   cp -Rf "${PKGDIR}/$1" "${TMPDIR}"
   cd "${TMPDIR}/$1"
-  __ccm_build
+
+  smsg "$1" "building started"
+  if __ccm_build ; then
+    smsg "$1" "building succeded"
+  else
+    smsg "$1" "building failed"
+  fi
 }
 
 test_vtk_git()
@@ -85,7 +104,7 @@ test_vtk_git()
   CH_EXT_DIR="${CHROOT_PATH}/build/vtk-git/src/ExternalData"
   EXT_DIR="/mnt/CACHE/MAKEPKG/sources/VTKExternalData"
   msg "testing vtk-git..."
-  install_dep "netcdf-cxx-legacy" 
+  install_dep "netcdf-cxx-legacy"
   sleep 10 &&\
     msg "Copying External Data..." &&\
     cp -rvT "${EXT_DIR}" "${CH_EXT_DIR}" &
@@ -98,7 +117,7 @@ test_libsnl_svn()
 {
   setup_test_env
   msg "testing libsnl-svn..."
-   
+
   ccm_build "libsnl-svn"
 }
 
@@ -106,11 +125,39 @@ test_calculix()
 {
   setup_test_env
   msg "testing calculix..."
-  
+
   install_dep spooles
-  
-  test_libsnl_svn 
+  test_libsnl_svn
+
   ccm_build "calculix"
+}
+
+test_calculix_doc()
+{
+  setup_test_env
+  msg "testing calculix-doc..."
+
+  test_calculix
+
+  ccm_build "calculix-doc"
+}
+
+test_pk2_la_svn()
+{
+  setup_test_env
+  msg "testing pk2-la-svn..."
+
+  install_dep python2-pyusb
+
+  ccm_build "pk2-la-svn"
+}
+
+test_lxnstack()
+{
+  setup_test_env
+  msg "testing lxnstack..."
+
+  ccm_build "lxnstack"
 }
 
 if [[ "x$2" == "x32" ]]; then
@@ -121,19 +168,33 @@ else
   arch="64"
 fi
 
+LOGFILE="${PKGDIR}/ccm${arch}.log"
+
 case $1 in
   vtk-git)
-    test_vtk_git 
+    test_vtk_git
     ;;
   calculix)
     test_calculix
     ;;
+  calculix-doc)
+    test_calculix_doc
+    ;;
   libsnl-svn)
     test_libsnl_svn
     ;;
+  pk2-la-svn)
+    test_pk2_la_svn
+    ;;
+  lxnstack)
+    test_lxnstack
+    ;;
   all)
-    test_calculix
+    test_calculix_doc
     test_vtk_git
+    ;;
+  *)
+    echo "Unkown package '$1'"
     ;;
 esac
 
