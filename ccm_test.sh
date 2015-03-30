@@ -42,14 +42,11 @@ msg()
 
 msg2()
 {
-  echo "--> $1" | totee
+  echo "  -> $1" | totee
 }
 
 setup_test_env()
 {
-  msg "clearing log file..."
-  rm ${LOGFILE}
-
   msg "creating temp directories..."
   if [[ ! -d "${TMPDIR}" ]]; then
     mkdir "${TMPDIR}"
@@ -107,10 +104,10 @@ test_vtk_git()
   install_dep "netcdf-cxx-legacy"
   sleep 10 &&\
     msg "Copying External Data..." &&\
-    cp -rvT "${EXT_DIR}" "${CH_EXT_DIR}" &
+    cp -rvT "${EXT_DIR}" "${CH_EXT_DIR}" | totee &
   ccm_build "vtk-git"
   msg "saving external data..."
-  cp -rvT "${CH_EXT_DIR}" "${EXT_DIR}"
+  cp -rvT "${CH_EXT_DIR}" "${EXT_DIR}" | totee
 }
 
 test_libsnl_svn()
@@ -170,6 +167,9 @@ fi
 
 LOGFILE="${PKGDIR}/ccm${arch}.log"
 
+msg "clearing log file..."
+rm ${LOGFILE}
+
 case $1 in
   vtk-git)
     test_vtk_git
@@ -192,6 +192,8 @@ case $1 in
   all)
     test_calculix_doc
     test_vtk_git
+    test_lxstack
+    test_pk2_la_svn
     ;;
   *)
     echo "Unkown package '$1'"
