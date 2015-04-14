@@ -1,0 +1,228 @@
+# Maintainer: Maurizio D'Addona <mauritiusdadd@gmail.com>
+
+pkgname=kicad-smisioto-modules
+pkgver=2015.04.14
+pkgrel=1
+pkgdesc="Various kicad footprints and 3d models"
+arch=('any')
+url="http://smisioto.no-ip.org/elettronica/kicad/kicad-en.htm"
+license=('GPL3')
+depends=('kicad')
+source=(
+http://smisioto.no-ip.org/kicad_libs/modules/mod_battery_holders.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_capacitors.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_conn_9159.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_conn_av.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_conn_d-sub.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_conn_df12.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_conn_df13.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_conn_gmkds.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_conn_jst-ph.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_conn_kk100.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_conn_kk156.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_conn_misc.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_conn_mkds.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_conn_modu.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_conn_mpt.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_conn_panelmate.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_conn_pc.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_conn_pt-1,5.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_conn_rf.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_conn_screw.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_conn_strip.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_crystal.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_details.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_indicators.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_logo.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_misc_comp.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_misc_rf.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_pga.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_pin_strip.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_pth_circuits.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_pth_diodes.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_pth_plcc.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_pth_resistors.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_relay.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_rf_modules.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_switch.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_to.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_smd_bga.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_smd_cap.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_smd_dil.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_smd_diode.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_smd_inductors.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_smd_leds.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_smd_lqfp.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_smd_plcc.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_smd_qfn.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_smd_resistors.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_smd_strip.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_smd_trans.zip
+http://smisioto.no-ip.org/kicad_libs/modules/mod_vacuum.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_battery_holders.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_capacitors.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_conn_9159.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_conn_av.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_conn_d-sub.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_conn_df12.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_conn_df13.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_conn_gmkds.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_conn_jst-ph.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_conn_kk100.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_conn_kk156.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_conn_misc.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_conn_mkds.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_conn_modu.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_conn_mpt.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_conn_panelmate.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_conn_pc.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_conn_pt-1,5.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_conn_rf.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_conn_screw.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_conn_strip.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_crystal.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_details.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_indicators.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_misc_comp.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_misc_rf.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_pga.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_pin_strip.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_pth_circuits.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_pth_diodes.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_pth_plcc.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_pth_resistors.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_relay.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_rf_modules.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_switch.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_to.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_smd_bga.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_smd_cap.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_smd_dil.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_smd_diode.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_smd_inductors.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_smd_leds.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_smd_lqfp.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_smd_plcc.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_smd_qfn.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_smd_resistors.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_smd_strip.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_smd_trans.zip
+http://smisioto.no-ip.org/kicad_libs/packages3d/3d_vacuum.zip
+)
+
+sha256sums=('2738bb9570166dc28e5d5f267ddfa1afff9cebe0fbd43cf8b413a27ac23e2490'
+            '5137c9c8c13c387cb11599200df7d6d69b2b84ed765c1aa88a69fbdc086bee53'
+            '369a9280bba4834d673305749c1612378522f0517ff5ff931e039d2d2da71d18'
+            '7d813c261cf07cae6134df04dc0078ffaf952ca1c8768fca6aa47ff3aa01ebf5'
+            'a6961dd2f7beb5681a870a88d7d1e0b19fc575ee4cda65b1ead538ed671fd40b'
+            'a89b1ddf5c9d43e33d09904e3b2659270b1d6a60d9fb3b9bdeca6a101a13bebc'
+            '1540d2f7018c5f530c5e492eb8ff504cbfae24e6eb187503f8097c4cbd3f58d9'
+            '593ac85297ab5e3d2fd64987a71668d6e3c389ae727fa4b53a3238cc448d29e3'
+            '99980be2166f3c5df29cf767f4389a816e57cbd48807629cbcc00b7a76ff53fa'
+            'ceb760c23f83a5700a03322535568fde96839060ee830630dae6b6ef0443cb08'
+            'e4ee185f7d62a47018d6173013a8587185f550cef72b64898ab8dcdeeae71da0'
+            '56c9720fcce8079658be28aeecf7ef64fd3ec01845d1a88fce5b4c5b22a92661'
+            '571fe68e04ddccea99fc8ba7c3b83004eb61408398f2dcedb7f2c5b945ff8b89'
+            '4464f89c8ea91e3e8297486714e15d74ee0725fe374181d0b0684cfb3d0449aa'
+            '2b0239505659b394d30ca2688f6370b2a20d9ed0b37083e9c2060845420e863b'
+            'e2a4573e09583d093358f855bc4329d264d0168c389733b8377c8a1659c5db0a'
+            '642eb3b811de1ee7bf4203922b253e239fed1423bde28acfb6a3f0896b1e6ba8'
+            '0f0e61fe509e945aa74faddf61e32a57e19f2be65022492f768d2b182ed8604f'
+            'd4cbec5088da72e4cfd111473ace044de8bd8b49289bf351b0e3b1f17a54bf78'
+            '6959142808d6dba7ba384d0c416e4bd8eac2f7e807d05834f5fca51196fabee6'
+            'd7b717e3328510daa321914173538c324e521d31ef668a46d350d93d217cb565'
+            '7395b8671def8e4453518f5f9711389079fc28a1fe377eeaaaa564cc69029726'
+            '9023815cda78e6ef282f3bb1425ef0222e9c75449f2f9864ceb0b2feedd42f3e'
+            '2c4788e7af8a7f5da50f36da16f9eeffd0cff4fbfd70c58e2f3d46b13d68c058'
+            'b17ba7e563a7c77c8585d5ed9ca7f1ae9c1b608e790d3c386e89c132aa8968f6'
+            '6b07195ec41427f2e6067a46845fc064696ec42db56a504ecd7764fa685cae49'
+            '0197bc6df8251aeec63cffc00e13d13cac4d471996ffd1f73d5332777874fdb4'
+            '585a5b06cf5e5b65c15dc6b1a86ac60607c6ccee5d59ff7e69f9a83c99a86a28'
+            '9ed8870982221dd73d638fa9191ef2948fe34933e9559842220c6d65e74895b8'
+            '23e00ff64af893b49017e8557bfb0e85367f0e3b18f7fc4f3e4019ac4463e516'
+            '660a8fd2c3f53d9e46f6641b90960421cdb2e4267d6b95eda1da33320dbba06d'
+            'b449b0f0f1b1dfef53d64638540cfb9d516bfff0ac866a39dfc1d2fb9558093b'
+            '9dac375dcd4ca3007fd39bb9fde635238299b733bd7156dae842c2596dbe4d13'
+            '132f1488218ad7d0be4c550cd729d83ce794959ff8b246314f10145d968d9d13'
+            '9aaa594cd1c05833ca95d8865b1fad9479a923c99b0f87dadc2e903d8c00e6f7'
+            '831fbfee45f002b8eef0115ec536a402ef5e7b1aa2ba38a7576b7a323331c185'
+            '710be6a9f0715af4bb548a31a2bedc0f8308c2edf9be0a6b4a0fa7d6c0d0cc21'
+            '0b2dc3b47105f35dcf8c4b2bdb356682b7aeec4e0dac1266e21828f49a4da2a3'
+            'a3119c5f36d6161f22910a6e73920c56ecdb53b3b9d586b0a61ba17934cdd920'
+            'da13c5cb8d20d2d40497e7bfd0532b8a24fbaf371160866aec7f9dfad0d4fa32'
+            '3dc6cc5a2e8ab67219268b9cf441324e7557dbeef8019299261a260050ab82a4'
+            'f39e4a63e8cc78735b01ec03ccecc7a6cd12fffbc6df486f441ee1b7f36d8183'
+            '2c09675700610e9a6a456abada9c71c0484943b718ec2bf2d6479e0157553775'
+            '17a16b406329344f60f38a52c7e9d23ca8663e03744d72e55b1f2da285046f26'
+            '916a18346487e0a401ce120cc134a0f060fcc2600179bf4bb8ba310ab00c7474'
+            'c9bdb72497b5c5e44cfd89c93748276e8afce4f4dddcafb9833ff2e82dcb6420'
+            '4fecc664256409fe0da30a47d6f045e94864ae90cd313289b69f0a3914e8ad32'
+            '1e51d13491b4c382924ad498f87996f7f438ad4ca356405ad258d395c5bb2703'
+            'd94c25947c00cc1a92f3d37978e66a5121436f82bebba576870f24adb079f0b3'
+            'a28d19701068463454bfffbd51939b0be31a8e823c626b19c222eab1444edf2c'
+            '7a64007356cb13cf6a95721dc20a44f4dbca5362c6c16864c466678ac752559c'
+            '1c7c401131e18fa9ef97eaea66242afc4fc89ea7e3ddd0a463b8c61f50452835'
+            'd3c995b9d748a251639725b695cf597e85d16b0e733ec4b9eca6da1ea9382bd3'
+            'd2a0bbfe59bffdba5116c482ad35b5841b76aa7730cae3abb40db27e4a0a1671'
+            '1a248e5fbb14ba353e10d55bcc9a14655ba62c1e32bbb2f2554f423658905749'
+            '9667dbf1c95aea594954638b1365ef9eb9548f5edea241249bfe190bab2d32dc'
+            '9b8ec556ce75966bb58c0eef25cd5125062dcd49eb2dde191205180b4cd3c3f1'
+            'a13ca96e7e2a5e20742397b4cc5eac9349df67a052aaf9b2550efe0d3e2c9d5b'
+            '590f5f7f48bee4a9104f0f6c5dd29984721fb13225c522e4e3ff6f92efd04112'
+            '248057e7bd3b37c05d271cf03bdac5851d922dd471e233ebb1bb4225c4b20a88'
+            '1a2240d685de4ca787f4be26e146121ea8be97c2f0fea687ce38d19bf7ca2721'
+            '47e25f88bbf86a9edc03616f9dd8d116f2566bd33745a759c1f41c57fec1911e'
+            '59eea06a25836032110c61237a471e5fd73e5eab4f8d54d346c706b3a069df14'
+            'ce8b3add6a1acca53339c01b11781230ac461ceff59bec2fda6b6e2416ec791b'
+            '2b3d919e653863fe97fd6c64d9b1f8714e033cdc015e34ad201f4a3978da3ec6'
+            '8cdb0cfa7c1295dc5d32cb05915a7e0121e7b5f1e3fb4361c409c207313a623f'
+            'b3f68bd2c8a89c6fc5e7282c18024392350ef64ede8a4030b5f40d7f23f0564b'
+            'aef7afeac081facb61090cec786a6febebe3faace6e0450b5002ed867a3745c8'
+            '2c277a18e6d2564e2116b043c1202eef7b6ede71f9c0898fea4b4d776a12372d'
+            '310cd03fce74f3c11ecb51244e29feda65252a7bc12eefc6665eacd6a760ceb2'
+            'ca9ae8cb140c0eb0cc7638ccf4a3b1bdf16f9f013e62d78bff335fde3ad05096'
+            '946db1decd9de77232931eea55cbf28f4a2646755937940a172c31f380bbc759'
+            '121e391be89af1d3f2d8da7b8af7d8e7ba97d350b3000df98918de53b644cb09'
+            'd247fd0a0bcb843b256e86572d0f4d93bfd4d8de606b723cb1e6d5c009327423'
+            '43828c30fb60392349079e206084c69cec521735b1c7235a6a89ea3ccec9c5a5'
+            '43090cd3c37f7e300603c26ebcc8e95c41d42bba7c72006046dd140c30421978'
+            'e6baea4b0d6eb74a6abde7c87e090c0822ee5fa4bc4fbcde7e1dc81413c01b36'
+            'b5a01200f6c6851fa7731ace05a6b2c81e058b2aa3d5f876a5cd5fb97c0fe1d5'
+            '973f6a52b01408e4ca4c28cba999245ad094395973232749a8e18f177ea1b9a7'
+            'd97c8ae8a261582330edcca315e6ca3851ebb74fbe6e70113621be2ec4ed5630'
+            'a746f96dca6d7fd78e15e880ad44585756512b5a6aaebeaf4324e414494c2edd'
+            '3268f1f283fa95bd390b0977ffdf20c92f47f5aead3ebec6726cc817247475e0'
+            'dc5eff09b5da59ebd9d1b9dfc8a5d1ef9fc2b32228aacb4acfe7714f921e7ae2'
+            'e0063a629e89ca7f33d12d95aac565fbfd0d83dc8e702e4569b69ccdfb2a3c69'
+            '7689d2a2eb9a811d2834789e2e0ed852b8d954b3bf1689def13d1f9f7a578c51'
+            '7664fbb5fe18b39346506baa16e3ec0edad80c22258f7d2dc036b0c318fc8e36'
+            '96ae16f766f46dd973ba52be969c082bf0e11becddc88a684bccb6d803bb06af'
+            '6112bf67a0d4eaf89d6fd86d5c3fea4421add129b8af869dd2cfe5cae0370cf5'
+            '050d3da871ef41ecd66eed836f2a528fee01a487460889f3fb894de9f4673b89'
+            'ab07df10ce65edcf42222c24c0f1707b611f60c63ad4809cfa4a661f3c5f547e'
+            '052cf2b76510fb446fe9fdd6f5557226a215aa5b663b9e0eeacfbd3fb3a446d8'
+            '4cd578ca3051029a832d07a7665adea969886be2f709e2593a2fd9e1cc8e3ca3'
+            'f0e5bda5c11b4cac410d30c4e58cf9216a794a0fc7bd97e90bca3dca3c499233'
+            '78da5f69cabefd1ed08004662b13f31f6fcf30acc3d066f3e6857fb12c3f9189'
+            'ab4af0308c14741829c23f2cd5e44d5bbbb4fbfd030f9b8deec0b521c5f91d20'
+            '3de69166553b08c2c4e604c1f86b3fc2fdf27257c51ad229d0d532341f765dac'
+            '533b29b09f938fa2c840882d25c0cb9a8b23aed7d2ffc59139471404bc7914e9'
+            '35d89443342269ca9cfbb7f7e8ff8e35c8bea6e27f144498f6cacf1d696a4f49'
+            '7e3104c240049467aa0b7fd7854b395745d410df7b5e82549a1cc23ac568b129')
+
+package()
+{
+  install -Dm644 "${srcdir}/license.txt"\
+    "${pkgdir}/usr/share/license/smisioto/LICENSE"
+
+  install -dm755 "${pkgdir}/usr/share/kicad/modules"
+  install -m644 "${srcdir}/"*.mod "${pkgdir}/usr/share/kicad/modules"
+
+  for subdir in $(find "${srcdir}/walter/"* -type d); do
+    _dname="$(basename $subdir)"
+    install -dm755 "${pkgdir}/usr/share/kicad/modules/packages3d/${_dname}"
+    install -m644 "${subdir}/"* \
+      "${pkgdir}/usr/share/kicad/modules/packages3d/${_dname}"
+  done
+}
+
