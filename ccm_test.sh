@@ -4,7 +4,7 @@
 
 
 if [[ -z "${PKGDIR}" ]]; then
-  PKGDIR="${HOME}/Documents/informatica/AUR/personal"
+  PKGDIR="${AURDIR}"
 fi
 
 LOGFILE="${PKGDIR}/ccm.log"
@@ -95,6 +95,16 @@ ccm_build()
   fi
 }
 
+secure_copy()
+{
+  msg "waiting for $2 to be created..."
+  until [[ -e "$2" ]]; do
+    sleep 1
+  done
+  msg "found $2: copying files..." 
+  /usr/bin/cp -rvT "$1" "$2" | totee
+}
+
 test_vtk_git()
 {
   setup_test_env
@@ -102,9 +112,8 @@ test_vtk_git()
   EXT_DIR="/mnt/CACHE/MAKEPKG/sources/VTKExternalData"
   msg "testing vtk-git..."
   install_dep "netcdf-cxx-legacy"
-  sleep 10 &&\
-    msg "Copying External Data..." &&\
-    cp -rvT "${EXT_DIR}" "${CH_EXT_DIR}" | totee &
+  msg "Copying External Data..."
+  secure_copy "${EXT_DIR}" "${CH_EXT_DIR}" &
   ccm_build "vtk-git"
   msg "saving external data..."
   cp -rvT "${CH_EXT_DIR}" "${EXT_DIR}" | totee
