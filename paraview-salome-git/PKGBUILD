@@ -1,0 +1,171 @@
+# Maintainer: Maurizio D'Addona <mauritiusdadd@gmail.com>
+
+_gitver_pv="v4.3.1"
+
+_gitname_pv="ParaView"
+_gitname_qt="QtTesting"   # ThirdParty submodule
+_gitname_it="IceT"        # ThirdParty submodule
+_gitname_pb="protobuf"    # ThirdParty submodule
+_gitname_vb="VisItBridge" # Utilities submodule
+_gitname_vk="PVVTK"       # ParaView-VTK submodule
+
+pkgname=paraview-salome-git
+pkgver=20150113.f7aac03
+pkgrel=1
+pkgdesc='Parallel Visualization Application using VTK-Development version'
+arch=('i686' 'x86_64')
+url='http://www.paraview.org'
+license=('custom')
+depends=('qtwebkit' 'openmpi' 'python2' 'ffmpeg-compat' 'boost' 'libcgns-paraview'
+         'expat' 'freetype2' 'hdf5' 'libjpeg' 'libxml2' 'libtheora' 'libpng' 'libtiff' 'zlib'
+         'python2-selenium' 'python2-pillow' 'python2-matplotlib' 'python2-requests' 'python2-numpy'
+         'protobuf' 'netcdf' 'gl2ps')
+makedepends=('git' 'cmake' 'mesa' 'netcdf-cxx-legacy')
+#optdepends=('python2-matplotlib: Needed to support equation rendering using MathText markup language'
+#            'python2-numpy: Needed for using some filters such as "Python Calculator"')
+conflicts=('paraview')
+provides=('paraview')
+source=("$_gitname_pv::git://paraview.org/${_gitname_pv}.git#tag=${_gitver_pv}"
+        "$_gitname_qt::git://paraview.org/${_gitname_qt}.git"
+        "$_gitname_it::git://paraview.org/${_gitname_it}.git"
+        "$_gitname_pb::git://paraview.org/${_gitname_pb}.git"
+        "$_gitname_vb::git://paraview.org/${_gitname_vb}.git"
+        "$_gitname_vk::git://paraview.org/${_gitname_vk}.git"
+        'paraview.png'
+        'paraview.desktop')
+sha1sums=('SKIP'
+          'SKIP'
+          'SKIP'
+          'SKIP'
+          'SKIP'
+          'SKIP'
+          'a2dff014e1235dfaa93cd523286f9c97601d3bbc'
+          '1f94c8ff79bb2bd2c02d6b403ea1f4599616531b')
+
+pkgver() {
+    cd "$srcdir/$_gitname_pv"
+    git log -1 --date=short --format="%cd.%h" | tr -d '-'
+}
+
+prepare()
+{
+    cd "$srcdir/$_gitname_pv"
+
+    git submodule init
+    
+    cp -RT "${srcdir}/${_gitname_qt}/" "${srcdir}/${_gitname_pv}/ThirdParty/${_gitname_qt}/vtkqttesting"
+    cp -RT "${srcdir}/${_gitname_it}/" "${srcdir}/${_gitname_pv}/ThirdParty/${_gitname_it}/vtkicet"
+    cp -RT "${srcdir}/${_gitname_pb}/" "${srcdir}/${_gitname_pv}/ThirdParty/${_gitname_pb}/vtkprotobuf"
+    cp -RT "${srcdir}/${_gitname_vb}/" "${srcdir}/${_gitname_pv}/Utilities/${_gitname_vb}"
+    cp -RT "${srcdir}/${_gitname_vk}/" "${srcdir}/${_gitname_pv}/VTK"
+
+    git submodule update
+
+    # Retriving the paraview version
+    pv_ver="$(cat CMakeLists.txt | egrep -m1 "set \(PARAVIEW_VERSION[ ]+.*\)" | sed "s|.*\"\(.*\)\".*|\1|g")"
+}
+
+
+build() {
+    rm -rf "${srcdir}/build"
+    mkdir "${srcdir}/build"
+
+    cd "${srcdir}/build"
+
+    export JAVA_HOME="/usr/lib/jvm/default"
+    
+    #-Dicet_DIR=/usr/lib \
+
+    cmake  "$srcdir/$_gitname_pv" \
+    -Wno-dev \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DBUILD_TESTING=OFF \
+    -DBUILD_EXAMPLES=OFF \
+    -DBUILD_DOCUMENTATION=ON \
+    -DDOCUMENTATION_HTML_HELP=ON \
+    -DDOCUMENTATION_HTML_TARZ=ON \
+    -DExternalData_OBJECT_STORES=$srcdir/ExternalData \
+    -DBUILD_SHARED_LIBS=ON \
+    -DCMAKE_SHARED_LINKER_FLAGS="-lz -lcrypto" \
+    -DCMAKE_CXX_FLAGS="-D__STDC_CONSTANT_MACROS" \
+    -DCMAKE_COMPILER_IS_GNUCXX=True\
+    -DPARAVIEW_USE_MPI=ON \
+    -DPARAVIEW_USE_VISITBRIDGE=ON  \
+    -DPARAVIEW_ENABLE_FFMPEG=ON \
+    -DPARAVIEW_ENABLE_PYTHON=ON \
+    -DPARAVIEW_INSTALL_DEVELOPMENT_FILES=ON \
+    -DPARAVIEW_BUILD_PLUGIN_AdiosReader=ON \
+    -DPARAVIEW_BUILD_PLUGIN_EyeDomeLighting=ON \
+    -DPARAVIEW_BUILD_PLUGIN_MantaView=OFF \
+    -DPARAVIEW_BUILD_PLUGIN_InSituExodus=ON \
+    -DPARAVIEW_BUILD_PLUGIN_ForceTime=ON \
+    -DCMAKE_BUILD_TYPE="Release" \
+    -DPYTHON_EXECUTABLE=/usr/bin/python2 \
+    -DPYTHON_INCLUDE_DIR=/usr/include/python2.7 \
+    -DPYTHON_LIBRARY=/usr/lib/libpython2.7.so \
+    -DPYTHON_UTIL_LIBRARY=/usr/lib64/libutil.so \
+    -DPYTHON_MODULE_Image_FOUND=ON \
+    -DQT_HELP_GENERATOR=/usr/lib/qt4/bin/qhelpgenerator \
+    -DQT_QMAKE_EXECUTABLE=qmake-qt4 \
+    -DVISIT_BUILD_READER_CGNS=ON \
+    -DEigen_DIR=/usr/include/eigen3 \
+    -DFFMPEG_INCLUDE_DIR=/usr/include/ffmpeg-compat \
+    -DFFMPEG_avcodec_LIBRARY=/usr/lib/ffmpeg-compat/libavcodec.so \
+    -DFFMPEG_avformat_LIBRARY=/usr/lib/ffmpeg-compat/libavformat.so \
+    -DFFMPEG_avutil_LIBRARY=/usr/lib/ffmpeg-compat/libavutil.so \
+    -DFFMPEG_swscale_LIBRARY=/usr/lib/ffmpeg-compat/libswscale.so \
+    -DUSE_EXTERNAL_VTK=OFF \
+    -DVTK_USE_LARGE_DATA=OFF \
+    -DVTK_USE_SYSTEM_EXPAT=ON \
+    -DVTK_USE_SYSTEM_FREETYPE=ON \
+    -DVTK_USE_SYSTEM_GL2PS=ON \
+    -DVTK_USE_SYSTEM_HDF5=ON \
+    -DVTK_USE_SYSTEM_ICET=OFF \
+    -DVTK_USE_SYSTEM_JPEG=ON \
+    -DVTK_USE_SYSTEM_LIBXML2=ON \
+    -DVTK_USE_SYSTEM_LIBRARIES=ON \
+    -DVTK_USE_SYSTEM_LIBPROJ4=OFF \
+    -DVTK_USE_SYSTEM_PNG=ON \
+    -DVTK_USE_SYSTEM_PUGIXML=OFF \
+    -DVTK_USE_SYSTEM_QTTESTING=OFF \
+    -DVTK_USE_SYSTEM_PROTOBUF=OFF \
+    -DVTK_USE_SYSTEM_TIFF=ON \
+    -DVTK_USE_SYSTEM_ZLIB=ON \
+    -DVTK_USE_SYSTEM_JSONCPP=ON \
+    -DVTK_USE_SYSTEM_XDMF2=OFF \
+    -DVTK_USE_SYSTEM_VISITLIB=OFF \
+    -DVTK_USE_FFMPEG_ENCODER=ON \
+    -DVTK_USE_TK=ON \
+    -DVTK_USE_X=ON \
+    -DVTK_WRAP_JAVA=OFF \
+    -DVTK_WRAP_PYTHON=ON \
+    -Wno-dev
+
+    make ${MAKEFLAGS}
+
+    echo "/usr/lib/paraview-${pv_ver}" > paraview.conf
+
+
+}
+
+package() {
+    cd "${srcdir}/build"
+
+    make DESTDIR="${pkgdir}" install
+
+    #Install license
+    install -Dm644 "${srcdir}/$_gitname_pv/License_v1.2.txt" \
+        "${pkgdir}/usr/share/licenses/${pkgname}-git/LICENSE"
+
+    #Install ld conf file
+    install -Dm755 "./paraview.conf" \
+        "${pkgdir}/etc/ld.so.conf.d/paraview.conf"
+
+    #Install missing VTK files
+    install -Dm644 "${srcdir}/build/VTK/VTKTargets.cmake" \
+        "${pkgdir}/usr/lib/cmake/paraview-${pv_ver}/"
+
+    #Install desktop shortcuts
+    install -Dm644 "${srcdir}/paraview.png" "${pkgdir}/usr/share/pixmaps/paraview.png"
+    desktop-file-install --dir="${pkgdir}"/usr/share/applications "${srcdir}/paraview.desktop"
+}
