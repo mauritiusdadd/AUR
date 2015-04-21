@@ -166,6 +166,17 @@ test_lxnstack()
   ccm_build "lxnstack"
 }
 
+test_salome_kernel_git()
+{
+  setup_test_env
+  msg "testing salome-kernel-git..."
+
+  install_dep omniorb
+  install_dep omniorbpy
+  install_dep omninotify
+  ccm_build "salome-kernel-git"
+}
+
 if [[ "x$2" == "x32" ]]; then
   msg "building in i686 env"
   arch="32"
@@ -197,6 +208,9 @@ case $1 in
     ;;
   lxnstack)
     test_lxnstack
+    ;;
+  salome-kernel-git)
+    test_salome_kernel_git
     ;;
   all)
     test_calculix_doc

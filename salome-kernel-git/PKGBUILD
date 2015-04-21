@@ -1,0 +1,151 @@
+# Maintainer: Maurizio D'Addona <mauritiusdadd@gmail.com>
+# Contributor: Xyne
+
+# http://git.salome-platform.org/gitweb/
+
+_gitname="kernel"
+_gittag="V7_6_0b1"
+
+_modulename="kernel"
+_basename="salome-${_gitname}"
+_builddir="${pkgname}/${_basename}-build"
+_paraviewver=4.2
+
+pkgname=salome-kernel-git
+pkgver=7.6.0b1.r0.gf3ae3c6
+pkgrel=1
+pkgdesc="Generic platform for Pre and Post-Processing for numerical simulation (Kernel module)"
+url="http://www.salome-platform.org"
+depends=('tcsh' 'python2-scipy' 'swig' 'boost' 'omniorbpy' 'omninotify' 'hdf5' 'graphviz' 'cppunit' 'openmpi')
+optdepends=('salome-libbatch-git' 'salome-gui-git' 'salome-geom-git')
+makedepends=('sed' 'cmake' 'git' 'doxygen' 'python2-sphinx' 'python2-docutils' 'openmpi')
+options=(!strip staticlibs emptydirs libtool docs)
+arch=('i686' 'x86_64')
+conflicts=('salome-kernel')
+provides=('salome-kernel')
+license=('LGPL')
+source=("${pkgname}::git://git.salome-platform.org/modules/${_gitname}.git#tag=${_gittag}" )
+sha256sums=('SKIP')
+
+_prefix="/opt/salome-platform/${_gitname}"
+
+pkgver()
+{
+  cd "${srcdir}/${pkgname}"
+  git describe --long --tags | sed -r 's/([^-]*-g)/r\1/;s/-/./g;s/^[vV]//g;s/_main_/./g;s/_/./g'
+  #printf "%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+prepare()
+{
+  cd "${srcdir}/${pkgname}"
+
+  msg "Patching for python2 interpreter 1/2..."
+  find . -type f \
+    -execdir /usr/bin/sed\
+      -e "s|#![ ]*/usr/bin/env python$|#!/usr/bin/env python2|g"    \
+      -e "s|#![ ]*/usr/bin/env python[ ]|#!/usr/bin/env python2 |g" \
+      -i "{}" \
+  \; 
+
+  msg "Patching for python2 interpreter 2/2..."
+  for _prog in "python" "sphinx-build" "sphinx-apidoc"; do
+      find . -type f -not  \( \
+        -name "*.h"   -or \
+        -name "*.hxx" -or \
+        -name "*.hpp" -or \
+        -name "*.hh"  -or \
+        -name "*.c"   -or \
+        -name "*.cxx" -or \
+        -name "*.cpp" -or \
+        -name "*.cc"  -or \
+        -name "*.txt" \)  \
+        -execdir /usr/bin/sed \
+          -e "s/^${_prog}$/${_prog}2/g"  \
+          -e "s/^${_prog} /${_prog}2 /g" \
+          -e "s/\([ =]\)${_prog} /\1${_prog}2 /g"i \
+          -i "{}" \
+        \;
+  done
+}
+
+build()
+{
+  #rm -rf "${srcdir}/${_builddir}"
+  mkdir -p "${srcdir}/${_builddir}"
+  cd "${srcdir}/${_builddir}"
+
+  # NOTE: we should use -DCMAKE_INSTALL_PREFIX="${_prefix}"
+  #       but there is a bug in cmake_install.cmake that forces
+  #       us to use -DCMAKE_INSTALL_PREFIX="${pkgdir}/${_prefix}"
+  #       and then fix the hardcoded paths in the package function.
+   cmake "${srcdir}/${pkgname}" \
+      -Wno-dev\
+      -DCMAKE_INSTALL_PREFIX="${pkgdir}/${_prefix}" \
+      -DCMAKE_DESTDIR="${pkgdir}" \
+      -DCMAKE_C_COMPILER=mpicc \
+      -DCMAKE_CXX_COMPILER=mpicxx \
+      -DCMAKE_C_FLAGS="${CFLAGS} -D_DEFAULT_SOURCE"\
+      -DCMAKE_CXX_FLAGS="${CXXFLAGS} -D_DEFAULT_SOURCE"\
+      -DPYTHON_VERSION=2.7 \
+      -DPYTHON_INCLUDE_DIR=/usr/include/python2.7 \
+      -DPYTHON_LIB=/usr/lib/python2.7 \
+      -DPYTHON_LIB=/usr/lib/libpython2.7.so \
+      -DPYTHON_EXECUTABLE=/usr/bin/python2 \
+      -DSPHINX_APIDOC_EXECUTABLE=/usr/bin/sphinx-apidoc2 \
+      -DSPHINX_EXECUTABLE=/usr/bin/sphinx-build2 \
+      -DSALOME_BUILD_DOC=ON \
+      -DSALOME_BUILD_TESTS=ON \
+      -DSALOME_USE_MPI=ON \
+      -DSALOME_CMAKE_DEBUG=OFF \
+      -DCMAKE_BUILD_TYPE='Release'
+
+  make ${MAKEFLAGS}
+
+  msg "Generating environment variables..."
+
+  echo "export KERNEL_ROOT_DIR=${_prefix}" > ${_basename}.sh
+  echo "export PATH=\${PATH}:${_prefix}/bin/salome" >> ${_basename}.sh
+  echo "export PYTHONPATH=\${KERNEL_ROOT_DIR}/lib/python2.7/site-packages/salome:\${PYTHONPATH}" >> ${_basename}.sh
+  echo "${_prefix}/lib/" > ${_basename}.conf
+  echo "${_prefix}/lib/salome" >> ${_basename}.conf
+}
+
+package()
+{
+  #needed to correctly loading modules during installation process
+  export PYTHONPATH=${pkgdir}/usr/lib/python2.7/site-packages/salome:${pkgdir}/usr/bin/salome
+
+  cd "${srcdir}/${_builddir}"
+
+  # NOTE: DESTDIR="${pkgdir}" does not work correctly!
+  make install
+
+  install -Dm755 "./${_basename}.sh" \
+    "${pkgdir}/etc/profile.d/${_basename}.sh"
+
+  install -Dm755 "./${_basename}.conf" \
+    "${pkgdir}/etc/ld.so.conf.d/${_basename}.conf"
+
+  mv -f "${pkgdir}/${_prefix}/bin/salome/VERSION" \
+    "${pkgdir}/${_prefix}/bin/salome/VERSION-${_basename}"
+
+  # Add missing __init__.py file to ensure that the modules are detected.
+  find "$pkgdir/${_prefix}/lib/python2.7/site-packages/salome" \
+    -type d \
+    -exec touch '{}/__init__.py' \;
+
+  #replacing the annoying hardcoded paths...
+  msg "Fixing hardcoded paths..."
+  find ${pkgdir} \
+    -type f \
+    -name "*.py" -or  \
+    -name "*.txt" -or \
+    -name "*.cmake"   \
+    -execdir /usr/bin/sed \
+      -e "s|${srcdir}/${_builddir}|${_prefix}|g" \
+      -e "s|${srcdir}|${_prefix}|g" \
+      -e "s|${pkgdir}|${_prefix}|g" \
+      -i '{}' \
+  \;
+}
