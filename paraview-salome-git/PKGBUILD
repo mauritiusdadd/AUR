@@ -16,13 +16,21 @@ pkgdesc='Parallel Visualization Application using VTK-Development version'
 arch=('i686' 'x86_64')
 url='http://www.paraview.org'
 license=('custom')
-depends=('qtwebkit' 'openmpi' 'python2' 'ffmpeg-compat' 'boost' 'libcgns-paraview'
-         'expat' 'freetype2' 'hdf5' 'libjpeg' 'libxml2' 'libtheora' 'libpng' 'libtiff' 'zlib'
-         'python2-selenium' 'python2-pillow' 'python2-matplotlib' 'python2-requests' 'python2-numpy'
-         'protobuf' 'netcdf' 'gl2ps' 'eigen')
-makedepends=('git' 'cmake' 'mesa' 'netcdf-cxx-legacy')
-#optdepends=('python2-matplotlib: Needed to support equation rendering using MathText markup language'
-#            'python2-numpy: Needed for using some filters such as "Python Calculator"')
+depends=('qtwebkit' 'openmpi' 'python2'
+         'ffmpeg-compat' 'boost' 'libcgns-paraview'
+         'expat' 'freetype2' 'hdf5' 'libjpeg'
+         'libxml2' 'libtheora' 'libpng' 'libtiff'
+         'zlib' 'python2-selenium' 'python2-pillow'
+         'python2-matplotlib' 'python2-requests'
+         'python2-numpy' 'protobuf' 'gl2ps'
+         'netcdf' 'netcdf-cxx-legacy' 'eigen')
+makedepends=('cmake' 'grep' 'git' 'java-environment'
+             'doxygen' 'gnuplot' 'tk' 'wget' 'python2-matplotlib')
+optdepends=('python2: python bindings'
+            'tk: tcl bindings'
+            'gnuplot: plotting tools'
+            'graphviz: drawing tools'
+            'python2-matplotlib: for Matplotlib rendering')
 conflicts=('paraview')
 provides=('paraview')
 source=("$_gitname_pv::git+http://gitlab.kitware.com/paraview/paraview.git"
@@ -42,46 +50,44 @@ sha1sums=('SKIP'
           'a2dff014e1235dfaa93cd523286f9c97601d3bbc'
           '1f94c8ff79bb2bd2c02d6b403ea1f4599616531b')
 
-pkgver() {
-    cd "$srcdir/$_gitname_pv"
-    git log -1 --date=short --format="%cd.%h" | tr -d '-'
+pkgver()
+{
+  cd "$srcdir/$_gitname_pv"
+  git log -1 --date=short --format="%cd.%h" | tr -d '-'
 }
 
 prepare()
 {
-    cd "$srcdir/$_gitname_pv"
+  cd "$srcdir/$_gitname_pv"
 
-    rm -rf "${srcdir}/${_gitname_pv}/ThirdParty/${_gitname_qt}/vtkqttesting"
-    rm -rf "${srcdir}/${_gitname_pv}/ThirdParty/${_gitname_it}/vtkicet"
-    rm -rf "${srcdir}/${_gitname_pv}/ThirdParty/${_gitname_pb}/vtkprotobuf"
-    rm -rf "${srcdir}/${_gitname_pv}/Utilities/${_gitname_vb}"
-    rm -rf "${srcdir}/${_gitname_pv}/VTK"
+  rm -rf "${srcdir}/${_gitname_pv}/ThirdParty/${_gitname_qt}/vtkqttesting"
+  rm -rf "${srcdir}/${_gitname_pv}/ThirdParty/${_gitname_it}/vtkicet"
+  rm -rf "${srcdir}/${_gitname_pv}/ThirdParty/${_gitname_pb}/vtkprotobuf"
+  rm -rf "${srcdir}/${_gitname_pv}/Utilities/${_gitname_vb}"
+  rm -rf "${srcdir}/${_gitname_pv}/VTK"
 
-    git submodule init
+  git submodule init
 
-    cp -RT "${srcdir}/${_gitname_qt}/" "${srcdir}/${_gitname_pv}/ThirdParty/${_gitname_qt}/vtkqttesting"
-    cp -RT "${srcdir}/${_gitname_it}/" "${srcdir}/${_gitname_pv}/ThirdParty/${_gitname_it}/vtkicet"
-    cp -RT "${srcdir}/${_gitname_pb}/" "${srcdir}/${_gitname_pv}/ThirdParty/${_gitname_pb}/vtkprotobuf"
-    cp -RT "${srcdir}/${_gitname_vb}/" "${srcdir}/${_gitname_pv}/Utilities/${_gitname_vb}"
-    cp -RT "${srcdir}/${_gitname_vk}/" "${srcdir}/${_gitname_pv}/VTK"
+  cp -RT "${srcdir}/${_gitname_qt}/" "${srcdir}/${_gitname_pv}/ThirdParty/${_gitname_qt}/vtkqttesting"
+  cp -RT "${srcdir}/${_gitname_it}/" "${srcdir}/${_gitname_pv}/ThirdParty/${_gitname_it}/vtkicet"
+  cp -RT "${srcdir}/${_gitname_pb}/" "${srcdir}/${_gitname_pv}/ThirdParty/${_gitname_pb}/vtkprotobuf"
+  cp -RT "${srcdir}/${_gitname_vb}/" "${srcdir}/${_gitname_pv}/Utilities/${_gitname_vb}"
+  cp -RT "${srcdir}/${_gitname_vk}/" "${srcdir}/${_gitname_pv}/VTK"
 
-    git submodule sync
-    git submodule update
-
-    # Retriving the paraview version
-    pv_ver="$(cat CMakeLists.txt | egrep -m1 "set \(PARAVIEW_VERSION[ ]+.*\)" | sed "s|.*\"\(.*\)\".*|\1|g")"
+  git submodule sync
+  git submodule update
 }
 
 
 build() {
-    rm -rf "${srcdir}/build"
-    mkdir "${srcdir}/build"
+  rm -rf "${srcdir}/build"
+  mkdir "${srcdir}/build"
 
-    cd "${srcdir}/build"
+  cd "${srcdir}/build"
 
-    export JAVA_HOME="/usr/lib/jvm/default"
+  export JAVA_HOME="/usr/lib/jvm/default"
 
-    cmake  "$srcdir/$_gitname_pv" \
+  cmake  "$srcdir/$_gitname_pv" \
     -Wno-dev \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DBUILD_TESTING=OFF \
@@ -146,31 +152,34 @@ build() {
     -DVTK_WRAP_PYTHON=ON \
     -Wno-dev
 
-    make ${MAKEFLAGS}
+  make ${MAKEFLAGS}
 
-    echo "/usr/lib/paraview-${pv_ver}" > paraview.conf
+  # Retriving the paraview version
+  pv_ver="$(egrep -m1 'set \(PARAVIEW_VERSION[ ]+.*\)' $srcdir/$_gitname_pv/CMakeLists.txt | sed 's|.*\"\(.*\)\".*|\1|g')"
 
-
+  echo "/usr/lib/paraview-${pv_ver}" > paraview.conf
 }
 
 package() {
-    cd "${srcdir}/build"
 
-    make DESTDIR="${pkgdir}" install
+  pv_ver="$(egrep -m1 'set \(PARAVIEW_VERSION[ ]+.*\)' $srcdir/$_gitname_pv/CMakeLists.txt | sed 's|.*\"\(.*\)\".*|\1|g')"
+  cd "${srcdir}/build"
 
-    #Install license
-    install -Dm644 "${srcdir}/$_gitname_pv/License_v1.2.txt" \
-        "${pkgdir}/usr/share/licenses/${pkgname}-git/LICENSE"
+  make DESTDIR="${pkgdir}" install
 
-    #Install ld conf file
-    install -Dm755 "./paraview.conf" \
-        "${pkgdir}/etc/ld.so.conf.d/paraview.conf"
+  #Install license
+  install -Dm644 "${srcdir}/$_gitname_pv/License_v1.2.txt" \
+    "${pkgdir}/usr/share/licenses/${pkgname}-git/LICENSE"
 
-    #Install missing VTK files
-    install -Dm644 "${srcdir}/build/VTK/VTKTargets.cmake" \
-        "${pkgdir}/usr/lib/cmake/paraview-${pv_ver}/"
+  #Install ld conf file
+  install -Dm755 "./paraview.conf" \
+    "${pkgdir}/etc/ld.so.conf.d/paraview.conf"
 
-    #Install desktop shortcuts
-    install -Dm644 "${srcdir}/paraview.png" "${pkgdir}/usr/share/pixmaps/paraview.png"
-    desktop-file-install --dir="${pkgdir}"/usr/share/applications "${srcdir}/paraview.desktop"
+  #Install missing VTK files
+  install -Dm644 "${srcdir}/build/VTK/VTKTargets.cmake" \
+    "${pkgdir}/usr/lib/cmake/paraview-${pv_ver}/"
+
+  #Install desktop shortcuts
+  install -Dm644 "${srcdir}/paraview.png" "${pkgdir}/usr/share/pixmaps/paraview.png"
+  desktop-file-install --dir="${pkgdir}"/usr/share/applications "${srcdir}/paraview.desktop"
 }

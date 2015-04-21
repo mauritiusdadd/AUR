@@ -19,18 +19,21 @@ provides=('vtk')
 depends=('libjpeg-turbo' 'boost'
          'ffmpeg' 'qt4' 'lesstif'
          'mariadb' 'gdal' 'glu'
-         'python2' 'tk' 'gnuplot'
-         'gl2ps' 'netcdf-fortran'
+         'libgl' 'gl2ps' 'netcdf-fortran'
          'netcdf-cxx-legacy'
          'jsoncpp' 'openmpi'
          'qtwebkit' 'java-environment')
-makedepends=('cmake' 'doxygen' 'libgl' 'openmpi' 'git')
-optdepends=('java-runtime: java bindings'
-            'graphviz: drawing tools')
-
+makedepends=('cmake' 'git' 'java-environment' 'doxygen' 'gnuplot' 'tk' 'wget' 'python2-matplotlib')
+optdepends=('python2: python bindings'
+            'java-runtime: java bindings'
+            'tk: tcl bindings'
+            'gnuplot: plotting tools'
+            'graphviz: drawing tools'
+            'python2-matplotlib: for Matplotlib rendering')
 source=("VTK::git+http://gitlab.kitware.com/vtk/vtk.git#branch=${_gitbranch}"
         "VTKData::git://vtk.org/${_gitname}Data.git#branch=${_gitbranch}")
-sha256sums=('SKIP')
+sha256sums=('SKIP'
+            'SKIP')
 
 pkgver()
 {
