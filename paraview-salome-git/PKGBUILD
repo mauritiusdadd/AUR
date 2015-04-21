@@ -7,10 +7,10 @@ _gitname_qt="QtTesting"   # ThirdParty submodule
 _gitname_it="IceT"        # ThirdParty submodule
 _gitname_pb="protobuf"    # ThirdParty submodule
 _gitname_vb="VisItBridge" # Utilities submodule
-_gitname_vk="PVVTK"       # ParaView-VTK submodule
+_gitname_vk="VTK"       # ParaView-VTK submodule
 
 pkgname=paraview-salome-git
-pkgver=20150113.f7aac03
+pkgver=20150421.5a21c7b
 pkgrel=1
 pkgdesc='Parallel Visualization Application using VTK-Development version'
 arch=('i686' 'x86_64')
@@ -19,18 +19,18 @@ license=('custom')
 depends=('qtwebkit' 'openmpi' 'python2' 'ffmpeg-compat' 'boost' 'libcgns-paraview'
          'expat' 'freetype2' 'hdf5' 'libjpeg' 'libxml2' 'libtheora' 'libpng' 'libtiff' 'zlib'
          'python2-selenium' 'python2-pillow' 'python2-matplotlib' 'python2-requests' 'python2-numpy'
-         'protobuf' 'netcdf' 'gl2ps')
+         'protobuf' 'netcdf' 'gl2ps' 'eigen')
 makedepends=('git' 'cmake' 'mesa' 'netcdf-cxx-legacy')
 #optdepends=('python2-matplotlib: Needed to support equation rendering using MathText markup language'
 #            'python2-numpy: Needed for using some filters such as "Python Calculator"')
 conflicts=('paraview')
 provides=('paraview')
-source=("$_gitname_pv::git://paraview.org/${_gitname_pv}.git#tag=${_gitver_pv}"
-        "$_gitname_qt::git://paraview.org/${_gitname_qt}.git"
-        "$_gitname_it::git://paraview.org/${_gitname_it}.git"
-        "$_gitname_pb::git://paraview.org/${_gitname_pb}.git"
-        "$_gitname_vb::git://paraview.org/${_gitname_vb}.git"
-        "$_gitname_vk::git://paraview.org/${_gitname_vk}.git"
+source=("$_gitname_pv::git+http://gitlab.kitware.com/paraview/paraview.git"
+        "$_gitname_qt::git+http://paraview.org/QtTesting.git"
+        "$_gitname_it::git+http://gitlab.kitware.com/icet/icet.git"
+        "$_gitname_pb::git+http://public.kitware.com/protobuf.git"
+        "$_gitname_vb::git+http://gitlab.kitware.com/paraview/visitbridge.git"
+        "$_gitname_vk::git+http://gitlab.kitware.com/vtk/vtk.git"
         'paraview.png'
         'paraview.desktop')
 sha1sums=('SKIP'
@@ -51,14 +51,21 @@ prepare()
 {
     cd "$srcdir/$_gitname_pv"
 
+    rm -rf "${srcdir}/${_gitname_pv}/ThirdParty/${_gitname_qt}/vtkqttesting"
+    rm -rf "${srcdir}/${_gitname_pv}/ThirdParty/${_gitname_it}/vtkicet"
+    rm -rf "${srcdir}/${_gitname_pv}/ThirdParty/${_gitname_pb}/vtkprotobuf"
+    rm -rf "${srcdir}/${_gitname_pv}/Utilities/${_gitname_vb}"
+    rm -rf "${srcdir}/${_gitname_pv}/VTK"
+
     git submodule init
-    
+
     cp -RT "${srcdir}/${_gitname_qt}/" "${srcdir}/${_gitname_pv}/ThirdParty/${_gitname_qt}/vtkqttesting"
     cp -RT "${srcdir}/${_gitname_it}/" "${srcdir}/${_gitname_pv}/ThirdParty/${_gitname_it}/vtkicet"
     cp -RT "${srcdir}/${_gitname_pb}/" "${srcdir}/${_gitname_pv}/ThirdParty/${_gitname_pb}/vtkprotobuf"
     cp -RT "${srcdir}/${_gitname_vb}/" "${srcdir}/${_gitname_pv}/Utilities/${_gitname_vb}"
     cp -RT "${srcdir}/${_gitname_vk}/" "${srcdir}/${_gitname_pv}/VTK"
 
+    git submodule sync
     git submodule update
 
     # Retriving the paraview version
@@ -73,8 +80,6 @@ build() {
     cd "${srcdir}/build"
 
     export JAVA_HOME="/usr/lib/jvm/default"
-    
-    #-Dicet_DIR=/usr/lib \
 
     cmake  "$srcdir/$_gitname_pv" \
     -Wno-dev \

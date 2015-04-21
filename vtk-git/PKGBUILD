@@ -7,7 +7,7 @@ _gitname='VTK'
 _gitbranch="master" #Development
 
 pkgname=vtk-git
-pkgver=6.2.0.r175.g4af1ba2
+pkgver=6.2.0.r595.gaf02b2f
 pkgrel=1
 pkgdesc='A software system for 3D computer graphics, image processing, and visualization.'
 arch=('i686' 'x86_64')
@@ -28,10 +28,9 @@ makedepends=('cmake' 'doxygen' 'libgl' 'openmpi' 'git')
 optdepends=('java-runtime: java bindings'
             'graphviz: drawing tools')
 
-source=("VTK::git://vtk.org/${_gitname}.git#branch=$_gitbranch"
-        "VTKData::git://vtk.org/${_gitname}Data.git#branch=$_gitbranch")
-sha256sums=('SKIP'
-            'SKIP')
+source=("VTK::git+http://gitlab.kitware.com/vtk/vtk.git#branch=${_gitbranch}"
+        "VTKData::git://vtk.org/${_gitname}Data.git#branch=${_gitbranch}")
+sha256sums=('SKIP')
 
 pkgver()
 {
