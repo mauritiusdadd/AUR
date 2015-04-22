@@ -22,7 +22,7 @@ depends=('qtwebkit' 'openmpi' 'python2'
          'libxml2' 'libtheora' 'libpng' 'libtiff'
          'zlib' 'python2-selenium' 'python2-pillow'
          'python2-matplotlib' 'python2-requests'
-         'python2-numpy' 'protobuf' 'gl2ps'
+         'python2-numpy' 'gl2ps'
          'netcdf' 'netcdf-cxx-legacy' 'eigen'
          'jsoncpp' 'xdg-utils' 'desktop-file-utils')
 makedepends=('cmake' 'grep' 'git' 'java-environment'
@@ -208,11 +208,38 @@ package() {
   install -Dm755 "./paraview.conf" \
     "${pkgdir}/etc/ld.so.conf.d/paraview.conf"
 
-  #Install missing VTK files
+  #Install missing VTK cmake files
   install -Dm644 "${srcdir}/build/VTK/VTKTargets.cmake" \
     "${pkgdir}/usr/lib/cmake/paraview-${pv_ver}/"
+
+  install -Dm644 "$srcdir/$_gitname_pv/VTK/CMake/TopologicalSort.cmake" \
+    "${pkgdir}/usr/lib/cmake/paraview-${pv_ver}/"
+
+  #Install missing header
+  for _file in pqViewFrameActionGroup.h \
+               vtkSIVectorPropertyTemplate.h \
+               vtkMaterialInterfaceIdListItem.h \
+               vtkExodusIIReaderPrivate.h vtk3DS.h
+  do
+    find ./ -name "${_file}" -execdir install -Dm644 '{}' "${pkgdir}/usr/include/paraview-${pv_ver}/" \;
+  done
 
   #Install desktop shortcuts
   install -Dm644 "${srcdir}/paraview.png" "${pkgdir}/usr/share/pixmaps/paraview.png"
   desktop-file-install --dir="${pkgdir}"/usr/share/applications "${srcdir}/paraview.desktop"
+
+  #replacing the annoying hardcoded paths...
+  msg "Fixing hardcoded paths..."
+  find ${pkgdir} \
+    -type f \
+    -name "*.py" -or  \
+    -name "*.txt" -or \
+    -name "*.cmake"   \
+    -execdir /usr/bin/sed \
+      -e "s|${srcdir}/${_builddir}/lib|${_prefix}/lib/paraview-${pv_ver}|" \
+      -e "s|${srcdir}/${_builddir}|${_prefix}|g" \
+      -e "s|${srcdir}|${_prefix}|g" \
+      -e "s|${pkgdir}|${_prefix}|g" \
+      -i '{}' \
+  \;
 }

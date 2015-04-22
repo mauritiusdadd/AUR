@@ -1,0 +1,29 @@
+Index: adm_local/cmake_files/FindPyQt4.cmake
+===================================================================
+---adm_local/cmake_files/FindPyQt4.cmake
++++adm_local/cmake_files/FindPyQt4.cmake
+@@ -74,4 +74,4 @@
+ sys.path[:0] = '${SIP_PYTHONPATH}'.split(';');
+-from PyQt4 import pyqtconfig; 
+-sys.stdout.write(pyqtconfig.Configuration().pyqt_sip_flags)"
++from PyQt4 import QtCore; 
++sys.stdout.write(QtCore.PYQT_CONFIGURATION['sip_flags'])"
+   OUTPUT_VARIABLE PYQT_SIPFLAGS)
+Index: adm_local/cmake_files/deprecated/FindSIPPYQT.cmake
+===================================================================
+---adm_local/cmake_files/deprecated/FindSIPPYQT.cmake
++++adm_local/cmake_files/deprecated/FindSIPPYQT.cmake
+@@ -67,3 +67,3 @@
+ EXECUTE_PROCESS(
+-  COMMAND ${PYTHON_EXECUTABLE} -c "import re, PyQt4.pyqtconfig ; s = PyQt4.pyqtconfig.Configuration().pyqt_sip_flags ; print s;"
++  COMMAND ${PYTHON_EXECUTABLE} -c "import re, PyQt4.QtCore ; s = PyQt4.QtCore.PYQT_CONFIGURATION['sip_flags'] ; print s;"
+   OUTPUT_VARIABLE COMPILE_FLAGS
+Index: adm_local/unix/config_files/check_pyqt.m4
+===================================================================
+---adm_local/unix/config_files/check_pyqt.m4
++++adm_local/unix/config_files/check_pyqt.m4
+@@ -238,3 +238,3 @@
+                     #SUPPORTED="Qt_`echo ${SUPPORTED} | sed -e 's/\./_/g'`"
+-                    PYQT_SIPFLAGS=`python -c "from PyQt4 import pyqtconfig; print pyqtconfig.Configuration().pyqt_sip_flags"`
++                    PYQT_SIPFLAGS=`python -c "from PyQt4 import QtCore; print QtCore.PYQT_CONFIGURATION['sip_flags']"`
+                     PYQT_SIPFLAGS="${PYQT_SIPFLAGS} -s .cc -c . ${PYQT_INCLUDES}"

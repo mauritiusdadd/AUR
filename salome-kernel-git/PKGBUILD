@@ -4,15 +4,14 @@
 # http://git.salome-platform.org/gitweb/
 
 _gitname="kernel"
-_gittag="V7_6_0b1"
+_gittag="V7_6_BR"
 
 _modulename="kernel"
 _basename="salome-${_gitname}"
-_builddir="${pkgname}/${_basename}-build"
 _paraviewver=4.2
 
 pkgname=salome-kernel-git
-pkgver=7.6.0b1.r0.gf3ae3c6
+pkgver=7.6.0b1.r4.g2e5cd21
 pkgrel=1
 pkgdesc="Generic platform for Pre and Post-Processing for numerical simulation (Kernel module)"
 url="http://www.salome-platform.org"
@@ -24,10 +23,11 @@ arch=('i686' 'x86_64')
 conflicts=('salome-kernel')
 provides=('salome-kernel')
 license=('LGPL')
-source=("${pkgname}::git://git.salome-platform.org/modules/${_gitname}.git#tag=${_gittag}" )
+source=("${pkgname}::git://git.salome-platform.org/modules/${_gitname}.git#branch=${_gittag}" )
 sha256sums=('SKIP')
 
 _prefix="/opt/salome-platform/${_gitname}"
+_builddir="${pkgname}/build"
 
 pkgver()
 {
@@ -89,7 +89,6 @@ build()
       -DCMAKE_CXX_FLAGS="${CXXFLAGS} -D_DEFAULT_SOURCE"\
       -DPYTHON_VERSION=2.7 \
       -DPYTHON_INCLUDE_DIR=/usr/include/python2.7 \
-      -DPYTHON_LIB=/usr/lib/python2.7 \
       -DPYTHON_LIB=/usr/lib/libpython2.7.so \
       -DPYTHON_EXECUTABLE=/usr/bin/python2 \
       -DSPHINX_APIDOC_EXECUTABLE=/usr/bin/sphinx-apidoc2 \
