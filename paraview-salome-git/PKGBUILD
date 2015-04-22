@@ -23,14 +23,19 @@ depends=('qtwebkit' 'openmpi' 'python2'
          'zlib' 'python2-selenium' 'python2-pillow'
          'python2-matplotlib' 'python2-requests'
          'python2-numpy' 'protobuf' 'gl2ps'
-         'netcdf' 'netcdf-cxx-legacy' 'eigen')
+         'netcdf' 'netcdf-cxx-legacy' 'eigen'
+         'jsoncpp' 'xdg-utils' 'desktop-file-utils')
 makedepends=('cmake' 'grep' 'git' 'java-environment'
-             'doxygen' 'gnuplot' 'tk' 'wget' 'python2-matplotlib')
+             'doxygen' 'gnuplot' 'tk' 'wget'
+             'python2-matplotlib' 'python2-twisted'
+             'findutils' 'sed')
 optdepends=('python2: python bindings'
             'tk: tcl bindings'
             'gnuplot: plotting tools'
             'graphviz: drawing tools'
-            'python2-matplotlib: for Matplotlib rendering')
+            'python2-matplotlib: for Matplotlib rendering'
+            'python2-twisted: for vtkWeb')
+install='paraview.install'
 conflicts=('paraview')
 provides=('paraview')
 source=("$_gitname_pv::git+http://gitlab.kitware.com/paraview/paraview.git"
@@ -39,6 +44,7 @@ source=("$_gitname_pv::git+http://gitlab.kitware.com/paraview/paraview.git"
         "$_gitname_pb::git+http://public.kitware.com/protobuf.git"
         "$_gitname_vb::git+http://gitlab.kitware.com/paraview/visitbridge.git"
         "$_gitname_vk::git+http://gitlab.kitware.com/vtk/vtk.git"
+        'paraview.install'
         'paraview.png'
         'paraview.desktop')
 sha1sums=('SKIP'
@@ -47,8 +53,9 @@ sha1sums=('SKIP'
           'SKIP'
           'SKIP'
           'SKIP'
+          '8dd2878eb62b7e20cf98f4ed55d2f67ebeb90d23'
           'a2dff014e1235dfaa93cd523286f9c97601d3bbc'
-          '1f94c8ff79bb2bd2c02d6b403ea1f4599616531b')
+          '19cfdb40f089666633dc4ebc565b6de7cf290d88')
 
 pkgver()
 {
@@ -74,8 +81,33 @@ prepare()
   cp -RT "${srcdir}/${_gitname_vb}/" "${srcdir}/${_gitname_pv}/Utilities/${_gitname_vb}"
   cp -RT "${srcdir}/${_gitname_vk}/" "${srcdir}/${_gitname_pv}/VTK"
 
-  git submodule sync
   git submodule update
+
+  msg "Patching for python2 interpreter 1/2..."
+  find . -type f \
+    -execdir /usr/bin/sed\
+      -e "s|#![ ]*/usr/bin/env python$|#!/usr/bin/env python2|g"    \
+      -e "s|#![ ]*/usr/bin/env python[ ]|#!/usr/bin/env python2 |g" \
+      -i "{}" \
+  \;
+
+  msg "Patching for python2 interpreter 2/2..."
+  find . -type f -not  \( \
+    -name "*.h"   -or \
+    -name "*.hxx" -or \
+    -name "*.hpp" -or \
+    -name "*.hh"  -or \
+    -name "*.c"   -or \
+    -name "*.cxx" -or \
+    -name "*.cpp" -or \
+    -name "*.cc"  -or \
+    -name "*.txt" \)  \
+    -execdir /usr/bin/sed \
+      -e "s/^python$/python2/g"  \
+      -e "s/^python /python2 /g" \
+      -e "s/\([ =]\)python /\1python2 /g" \
+      -i "{}" \
+    \;
 }
 
 
@@ -114,7 +146,7 @@ build() {
     -DPYTHON_EXECUTABLE=/usr/bin/python2 \
     -DPYTHON_INCLUDE_DIR=/usr/include/python2.7 \
     -DPYTHON_LIBRARY=/usr/lib/libpython2.7.so \
-    -DPYTHON_UTIL_LIBRARY=/usr/lib64/libutil.so \
+    -DPYTHON_UTIL_LIBRARY=/usr/lib/libutil.so \
     -DPYTHON_MODULE_Image_FOUND=ON \
     -DQT_HELP_GENERATOR=/usr/lib/qt4/bin/qhelpgenerator \
     -DQT_QMAKE_EXECUTABLE=qmake-qt4 \
@@ -141,6 +173,7 @@ build() {
     -DVTK_USE_SYSTEM_QTTESTING=OFF \
     -DVTK_USE_SYSTEM_PROTOBUF=OFF \
     -DVTK_USE_SYSTEM_TIFF=ON \
+    -DVTK_USE_SYSTEM_TWISTED=ON \
     -DVTK_USE_SYSTEM_ZLIB=ON \
     -DVTK_USE_SYSTEM_JSONCPP=ON \
     -DVTK_USE_SYSTEM_XDMF2=OFF \
@@ -169,7 +202,7 @@ package() {
 
   #Install license
   install -Dm644 "${srcdir}/$_gitname_pv/License_v1.2.txt" \
-    "${pkgdir}/usr/share/licenses/${pkgname}-git/LICENSE"
+    "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
 
   #Install ld conf file
   install -Dm755 "./paraview.conf" \

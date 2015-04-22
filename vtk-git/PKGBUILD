@@ -23,13 +23,16 @@ depends=('libjpeg-turbo' 'boost'
          'netcdf-cxx-legacy'
          'jsoncpp' 'openmpi'
          'qtwebkit' 'java-environment')
-makedepends=('cmake' 'git' 'java-environment' 'doxygen' 'gnuplot' 'tk' 'wget' 'python2-matplotlib')
+makedepends=('cmake' 'git' 'java-environment' 
+             'doxygen' 'gnuplot' 'tk' 'wget'
+             'python2-matplotlib' 'python2-twisted')
 optdepends=('python2: python bindings'
             'java-runtime: java bindings'
             'tk: tcl bindings'
             'gnuplot: plotting tools'
             'graphviz: drawing tools'
-            'python2-matplotlib: for Matplotlib rendering')
+            'python2-matplotlib: for Matplotlib rendering'
+            'python2-twisted: for vtkWeb')
 source=("VTK::git+http://gitlab.kitware.com/vtk/vtk.git#branch=${_gitbranch}"
         "VTKData::git://vtk.org/${_gitname}Data.git#branch=${_gitbranch}")
 sha256sums=('SKIP'
@@ -85,6 +88,7 @@ build()
     -DVTK_USE_SYSTEM_LIBPROJ4=OFF \
     -DVTK_USE_SYSTEM_PNG=ON \
     -DVTK_USE_SYSTEM_TIFF=ON \
+    -DVTK_USE_SYSTEM_TWISTED=ON \
     -DVTK_USE_SYSTEM_ZLIB=ON \
     -DVTK_USE_SYSTEM_JSONCPP=ON \
     -DVTK_USE_SYSTEM_XDMF2=OFF \

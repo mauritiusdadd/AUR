@@ -4,6 +4,6 @@ GenericName=Data Viewer
 Comment=ParaView allows visualization of large data sets
 Type=Application
 Terminal=false
-Icon=paraview
+Icon=kitware-paraview
 Categories=Graphics;
 Exec=/usr/bin/paraview
