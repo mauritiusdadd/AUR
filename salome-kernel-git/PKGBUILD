@@ -75,6 +75,8 @@ build()
   mkdir -p "${srcdir}/${_builddir}"
   cd "${srcdir}/${_builddir}"
 
+  _flags="-fPIC"
+
   # NOTE: we should use -DCMAKE_INSTALL_PREFIX="${_prefix}"
   #       but there is a bug in cmake_install.cmake that forces
   #       us to use -DCMAKE_INSTALL_PREFIX="${pkgdir}/${_prefix}"
@@ -85,8 +87,8 @@ build()
       -DCMAKE_DESTDIR="${pkgdir}" \
       -DCMAKE_C_COMPILER=mpicc \
       -DCMAKE_CXX_COMPILER=mpicxx \
-      -DCMAKE_C_FLAGS="${CFLAGS} -D_DEFAULT_SOURCE"\
-      -DCMAKE_CXX_FLAGS="${CXXFLAGS} -D_DEFAULT_SOURCE"\
+      -DCMAKE_C_FLAGS="${CFLAGS} ${_flags} -D_DEFAULT_SOURCE"\
+      -DCMAKE_CXX_FLAGS="${CXXFLAGS} ${_flags} -D_DEFAULT_SOURCE"\
       -DPYTHON_VERSION=2.7 \
       -DPYTHON_INCLUDE_DIR=/usr/include/python2.7 \
       -DPYTHON_LIB=/usr/lib/libpython2.7.so \
@@ -97,7 +99,8 @@ build()
       -DSALOME_BUILD_TESTS=ON \
       -DSALOME_USE_MPI=ON \
       -DSALOME_CMAKE_DEBUG=OFF \
-      -DCMAKE_BUILD_TYPE='Release'
+      -DCMAKE_BUILD_TYPE='Release' \
+      -Wno-dev
 
   make ${MAKEFLAGS}
 

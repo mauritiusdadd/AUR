@@ -171,7 +171,9 @@ test_paraview_salome_git()
   setup_test_env
   msg "testing paraview-salome-git..."
 
-  install_dep
+  install_dep netcdf-cxx-legacy
+  install_dep python2-selenium
+  install_dep libcgns-paraview
   ccm_build "paraview-salome-git"
 }
 
@@ -195,6 +197,16 @@ test_salome_gui_git()
   test_paraview_salome_git
 
   ccm_build "salome-gui-git"
+}
+
+test_salome_geom_git()
+{
+  setup_test_env
+  msg "testing salome-geom-git..."
+
+  test_salome_gui_git
+
+  ccm_build "salome-geom-git"
 }
 
 if [[ "x$2" == "x32" ]]; then
@@ -237,6 +249,9 @@ case $1 in
     ;;
   salome-gui-git)
     test_salome_gui_git
+    ;;
+  salome-geom-git)
+    test_salome_geom_git
     ;;
   all)
     test_calculix_doc
