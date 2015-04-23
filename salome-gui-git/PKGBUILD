@@ -111,6 +111,7 @@ build()
     -DBOOST_ROOT_DIR=/usr \
     -DPYQT4_ROOT_DIR=/usr \
     -DPARAVIEW_ROOT_DIR=/usr \
+    -DVTK_ROOT_DIR=/usr/lib/cmake/paraview \
     -DQWT_ROOT_DIR=/usr \
     -DQWT_LIBRARY="/usr/lib/qwt/libqwt.so" \
     -DCAS_ROOT_DIR=/opt/opencascade \

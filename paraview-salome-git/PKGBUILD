@@ -1,7 +1,5 @@
 # Maintainer: Maurizio D'Addona <mauritiusdadd@gmail.com>
 
-_gitver_pv="v4.3.1"
-
 _gitname_pv="ParaView"
 _gitname_qt="QtTesting"   # ThirdParty submodule
 _gitname_it="IceT"        # ThirdParty submodule
@@ -54,7 +52,7 @@ sha1sums=('SKIP'
           'SKIP'
           'SKIP'
           'SKIP'
-          'a26d96b9096ba347ffd29ec9312ca55894074f59'
+          '31b72398b5d23373294af9ae60374bf76117d884'
           'a2dff014e1235dfaa93cd523286f9c97601d3bbc'
           '3611bf900792dbb4bd8fae2462bff0a759158023'
           '19cfdb40f089666633dc4ebc565b6de7cf290d88')
@@ -123,9 +121,21 @@ build() {
 
   export JAVA_HOME="/usr/lib/jvm/default"
 
+  # NOTE: VTK_INSTALL_[A-Z]+_DIR are paths relative
+  #       to CMAKE_INSTALL_PREFIX
+
   cmake  "$srcdir/$_gitname_pv" \
     -Wno-dev \
     -DCMAKE_INSTALL_PREFIX=/usr \
+    -DVTK_INSTALL_RUNTIME_DIR=bin \
+    -DVTK_INSTALL_INCLUDE_DIR=include/paraview \
+    -DVTK_INSTALL_DATA_DIR=share/paraview \
+    -DVTK_INSTALL_DOC_DIR=share/dic/paraview \
+    -DVTK_INSTALL_ARCHIVE_DIR=lib/paraview \
+    -DVTK_INSTALL_LIBRARY_DIR=lib/paraview \
+    -DVTK_INSTALL_PACKAGE_DIR=lib/cmake/paraview \
+    -DQtTesting_INSTALL_LIB_DIR=lib/paraview \
+    -DQtTesting_INSTALL_CMAKE_DIR=lib/paraview/CMake \
     -DBUILD_TESTING=OFF \
     -DBUILD_EXAMPLES=OFF \
     -DBUILD_DOCUMENTATION=ON \
@@ -176,11 +186,6 @@ build() {
     -DVTK_Group_Tk=OFF \
     -DVTK_Group_Views=OFF \
     -DVTK_Group_Web=OFF \
-    -DVTK_INSTALL_INCLUDE_DIR=/usr/include/paraview \
-    -DVTK_INSTALL_ARCHIVE_DIR=/usr/lib/paraview \
-    -DVTK_INSTALL_LIBRARY_DIR=/usr/lib/paraview \
-    -DQtTesting_INSTALL_LIB_DIR=/usr/lib/paraview \
-    -DQtTesting_INSTALL_CMAKE_DIR=/usr/lib/paraview/CMake \
     -DVTK_USE_LARGE_DATA=OFF \
     -DVTK_USE_SYSTEM_EXPAT=ON \
     -DVTK_USE_SYSTEM_FREETYPE=ON \
@@ -207,19 +212,15 @@ build() {
     -DVTK_WRAP_JAVA=OFF \
     -DVTK_WRAP_PYTHON=ON \
     -Wno-dev \
-    -LAH
 
   make ${MAKEFLAGS}
 
   # Retriving the paraview version
-  pv_ver="$(egrep -m1 'set \(PARAVIEW_VERSION[ ]+.*\)' $srcdir/$_gitname_pv/CMakeLists.txt | sed 's|.*\"\(.*\)\".*|\1|g')"
-
-  echo "/usr/lib/paraview-${pv_ver}" > paraview.conf
+  echo "/usr/lib/paraview" > paraview.conf
 }
 
 package() {
 
-  pv_ver="$(egrep -m1 'set \(PARAVIEW_VERSION[ ]+.*\)' $srcdir/$_gitname_pv/CMakeLists.txt | sed 's|.*\"\(.*\)\".*|\1|g')"
   cd "${srcdir}/build"
 
   make DESTDIR="${pkgdir}" install
@@ -234,10 +235,10 @@ package() {
 
   #Install missing VTK cmake files
   install -Dm644 "${srcdir}/build/VTK/VTKTargets.cmake" \
-    "${pkgdir}/usr/lib/cmake/paraview-${pv_ver}/"
+    "${pkgdir}/usr/lib/cmake/paraview/"
 
   install -Dm644 "$srcdir/$_gitname_pv/VTK/CMake/TopologicalSort.cmake" \
-    "${pkgdir}/usr/lib/cmake/paraview-${pv_ver}/"
+    "${pkgdir}/usr/lib/cmake/paraview/"
 
   #Install missing header
   for _file in pqViewFrameActionGroup.h \
@@ -245,15 +246,15 @@ package() {
                vtkMaterialInterfaceIdListItem.h \
                vtkExodusIIReaderPrivate.h vtk3DS.h
   do
-    find ./ -name "${_file}" -exec install -Dm644 '{}' "${pkgdir}/usr/include/paraview-${pv_ver}/" \;
+    find ./ -name "${_file}" -exec install -Dm644 '{}' "${pkgdir}/usr/include/paraview/" \;
   done
 
   #Install desktop shortcut and mime info
   install -Dm644 "${srcdir}/paraview.png" "${pkgdir}/usr/share/pixmaps/paraview.png"
-  install -Dm644 "${srcdir}/paraview.xml" "${pkgdir}/usr/share/mime/application/paraview.xml"
+  install -Dm644 "${srcdir}/paraview.xml" "${pkgdir}/usr/share/mime/application/x-paraview.xml"
   desktop-file-install --dir="${pkgdir}"/usr/share/applications "${srcdir}/paraview.desktop"
 
-  #replacing the annoying hardcoded paths...
+  #replace the annoying hardcoded paths...
   msg "Fixing hardcoded paths..."
   find ${pkgdir} \
     -type f \( \
@@ -263,8 +264,8 @@ package() {
       -name "*.cmake" \
     \) \
     -exec /usr/bin/sed \
-      -e "s|${srcdir}/build/lib|/usr/lib/paraview-${pv_ver}|g" \
-      -e "s|${srcdir}/build/.*/\(VTKConfig.cmake\)|/usr/lib/paraview-${pv_ver}/\1|g" \
+      -e "s|${srcdir}/build/lib|/usr/lib/paraview|g" \
+      -e "s|${srcdir}/build/.*/\(VTKConfig.cmake\)|/usr/lib/paraview/\1|g" \
       -e "s|${srcdir}/${_gitname_pv}/CMake|/usr/lib/CMake|g" \
       -e "s|${srcdir}/build|/usr|g" \
       -e "s|${srcdir}|/usr|g" \

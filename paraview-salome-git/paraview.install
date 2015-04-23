@@ -2,22 +2,22 @@
 post_install()
 {
     xdg-icon-resource install --context apps --size 16 /usr/share/pixmaps/paraview.png kitware-paraview
-    xdg-mime install /usr/share/mime/applications/paraview.xml
-    xdg-mime default /usr/share/applications/paraview.desktop application/x-paraview
+    xdg-mime install /usr/share/mime/application/x-paraview.xml
+    xdg-mime default /usr/share/application/paraview.desktop application/x-paraview
     update-desktop-database -q
 }
 
 post_upgrade()
 {
     xdg-icon-resource install --context apps --size 16 /usr/share/pixmaps/paraview.png kitware-paraview
-    xdg-mime install /usr/share/mime/applications/paraview.xml
-    xdg-mime default /usr/share/applications/paraview.desktop application/x-paraview
+    xdg-mime install /usr/share/mime/application/x-paraview.xml
+    xdg-mime default /usr/share/application/paraview.desktop application/x-paraview
     update-desktop-database -q
 }
 pre_remove()
 {
     xdg-icon-resource uninstall --context apps --size 16 /usr/share/pixmaps/paraview.png kitware-paraview
-    xdg-mime uninstall /usr/share/mime/applications/paraview.xml
+    xdg-mime uninstall /usr/share/mime/application/x-paraview.xml
 }
 post_remove()
 {
