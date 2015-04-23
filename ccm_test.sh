@@ -101,7 +101,7 @@ secure_copy()
   until [[ -e "$2" ]]; do
     sleep 1
   done
-  msg "found $2: copying files..." 
+  msg "found $2: copying files..."
   /usr/bin/cp -rvT "$1" "$2" | totee
 }
 
@@ -166,6 +166,15 @@ test_lxnstack()
   ccm_build "lxnstack"
 }
 
+test_paraview_salome_git()
+{
+  setup_test_env
+  msg "testing paraview-salome-git..."
+
+  install_dep
+  ccm_build "salome-kernel-git"
+}
+
 test_salome_kernel_git()
 {
   setup_test_env
@@ -174,6 +183,18 @@ test_salome_kernel_git()
   install_dep omniorb
   install_dep omniorbpy
   install_dep omninotify
+  ccm_build "salome-kernel-git"
+}
+
+test_salome_gui_git()
+{
+  setup_test_env
+  msg "testing salome-gui-git..."
+
+  test_salome_kernel_git
+  test_paraview_salome_git
+
+  install_dep
   ccm_build "salome-kernel-git"
 }
 
@@ -209,8 +230,14 @@ case $1 in
   lxnstack)
     test_lxnstack
     ;;
+  paraview-salome--git)
+    test_paraview_salome_git
+    ;;
   salome-kernel-git)
     test_salome_kernel_git
+    ;;
+  salome-gui-git)
+    test_salome_gui_git
     ;;
   all)
     test_calculix_doc
