@@ -172,7 +172,7 @@ test_paraview_salome_git()
   msg "testing paraview-salome-git..."
 
   install_dep
-  ccm_build "salome-kernel-git"
+  ccm_build "paraview-salome-git"
 }
 
 test_salome_kernel_git()
@@ -194,8 +194,7 @@ test_salome_gui_git()
   test_salome_kernel_git
   test_paraview_salome_git
 
-  install_dep
-  ccm_build "salome-kernel-git"
+  ccm_build "salome-gui-git"
 }
 
 if [[ "x$2" == "x32" ]]; then
