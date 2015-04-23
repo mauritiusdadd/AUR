@@ -46,6 +46,7 @@ source=("$_gitname_pv::git+http://gitlab.kitware.com/paraview/paraview.git"
         "$_gitname_vk::git+http://gitlab.kitware.com/vtk/vtk.git"
         'paraview.install'
         'paraview.png'
+        'paraview.xml'
         'paraview.desktop')
 sha1sums=('SKIP'
           'SKIP'
@@ -53,8 +54,9 @@ sha1sums=('SKIP'
           'SKIP'
           'SKIP'
           'SKIP'
-          '8dd2878eb62b7e20cf98f4ed55d2f67ebeb90d23'
+          'a26d96b9096ba347ffd29ec9312ca55894074f59'
           'a2dff014e1235dfaa93cd523286f9c97601d3bbc'
+          '3611bf900792dbb4bd8fae2462bff0a759158023'
           '19cfdb40f089666633dc4ebc565b6de7cf290d88')
 
 pkgver()
@@ -85,25 +87,27 @@ prepare()
 
   msg "Patching for python2 interpreter 1/2..."
   find . -type f \
-    -execdir /usr/bin/sed\
+    -exec /usr/bin/sed \
       -e "s|#![ ]*/usr/bin/env python$|#!/usr/bin/env python2|g"    \
       -e "s|#![ ]*/usr/bin/env python[ ]|#!/usr/bin/env python2 |g" \
       -i "{}" \
   \;
 
   msg "Patching for python2 interpreter 2/2..."
-  find . -type f -not  \( \
-    -name "*.h"   -or \
-    -name "*.hxx" -or \
-    -name "*.hpp" -or \
-    -name "*.hh"  -or \
-    -name "*.c"   -or \
-    -name "*.cxx" -or \
-    -name "*.cpp" -or \
-    -name "*.cc"  -or \
-    -name "*.txt" \)  \
-    -execdir /usr/bin/sed \
-      -e "s/^python$/python2/g"  \
+  find . \
+    -type f -not  \(   \
+      -name "*.h"   -o \
+      -name "*.hxx" -o \
+      -name "*.hpp" -o \
+      -name "*.hh"  -o \
+      -name "*.c"   -o \
+      -name "*.cxx" -o \
+      -name "*.cpp" -o \
+      -name "*.cc"  -o \
+      -name "*.txt"    \
+    \) \
+    -exec /usr/bin/sed \
+      -e "s/^python$/python2/g" \
       -e "s/^python /python2 /g" \
       -e "s/\([ =]\)python /\1python2 /g" \
       -i "{}" \
@@ -127,6 +131,10 @@ build() {
     -DBUILD_DOCUMENTATION=ON \
     -DDOCUMENTATION_HTML_HELP=ON \
     -DDOCUMENTATION_HTML_TARZ=ON \
+    -DPARAVIEW_BUILD_PLUGIN_AdiosReader=ON \
+    -DPARAVIEW_BUILD_PLUGIN_CoProcessingScriptGenerator=ON \
+    -DPARAVIEW_BUILD_PLUGIN_EyeDomeLighting=ON \
+    -DPARAVIEW_BUILD_PLUGIN_ForceTime=ON \
     -DExternalData_OBJECT_STORES=$srcdir/ExternalData \
     -DBUILD_SHARED_LIBS=ON \
     -DCMAKE_SHARED_LINKER_FLAGS="-lz -lcrypto" \
@@ -158,6 +166,21 @@ build() {
     -DFFMPEG_avutil_LIBRARY=/usr/lib/ffmpeg-compat/libavutil.so \
     -DFFMPEG_swscale_LIBRARY=/usr/lib/ffmpeg-compat/libswscale.so \
     -DUSE_EXTERNAL_VTK=OFF \
+    -DVTK_Group_Imaging=OFF \
+    -DVTK_Group_MPI=OFF \
+    -DVTK_Group_ParaViewCore=ON \
+    -DVTK_Group_ParaViewQt=ON \
+    -DVTK_Group_ParaViewRendering=ON \
+    -DVTK_Group_Qt=ON \
+    -DVTK_Group_Rendering=OFF \
+    -DVTK_Group_Tk=OFF \
+    -DVTK_Group_Views=OFF \
+    -DVTK_Group_Web=OFF \
+    -DVTK_INSTALL_INCLUDE_DIR=/usr/include/paraview \
+    -DVTK_INSTALL_ARCHIVE_DIR=/usr/lib/paraview \
+    -DVTK_INSTALL_LIBRARY_DIR=/usr/lib/paraview \
+    -DQtTesting_INSTALL_LIB_DIR=/usr/lib/paraview \
+    -DQtTesting_INSTALL_CMAKE_DIR=/usr/lib/paraview/CMake \
     -DVTK_USE_LARGE_DATA=OFF \
     -DVTK_USE_SYSTEM_EXPAT=ON \
     -DVTK_USE_SYSTEM_FREETYPE=ON \
@@ -183,7 +206,8 @@ build() {
     -DVTK_USE_X=ON \
     -DVTK_WRAP_JAVA=OFF \
     -DVTK_WRAP_PYTHON=ON \
-    -Wno-dev
+    -Wno-dev \
+    -LAH
 
   make ${MAKEFLAGS}
 
@@ -221,25 +245,30 @@ package() {
                vtkMaterialInterfaceIdListItem.h \
                vtkExodusIIReaderPrivate.h vtk3DS.h
   do
-    find ./ -name "${_file}" -execdir install -Dm644 '{}' "${pkgdir}/usr/include/paraview-${pv_ver}/" \;
+    find ./ -name "${_file}" -exec install -Dm644 '{}' "${pkgdir}/usr/include/paraview-${pv_ver}/" \;
   done
 
-  #Install desktop shortcuts
+  #Install desktop shortcut and mime info
   install -Dm644 "${srcdir}/paraview.png" "${pkgdir}/usr/share/pixmaps/paraview.png"
+  install -Dm644 "${srcdir}/paraview.xml" "${pkgdir}/usr/share/mime/application/paraview.xml"
   desktop-file-install --dir="${pkgdir}"/usr/share/applications "${srcdir}/paraview.desktop"
 
   #replacing the annoying hardcoded paths...
   msg "Fixing hardcoded paths..."
   find ${pkgdir} \
-    -type f \
-    -name "*.py" -or  \
-    -name "*.txt" -or \
-    -name "*.cmake"   \
-    -execdir /usr/bin/sed \
-      -e "s|${srcdir}/${_builddir}/lib|${_prefix}/lib/paraview-${pv_ver}|" \
-      -e "s|${srcdir}/${_builddir}|${_prefix}|g" \
-      -e "s|${srcdir}|${_prefix}|g" \
-      -e "s|${pkgdir}|${_prefix}|g" \
+    -type f \( \
+      -name "*.h" -o \
+      -name "*.py" -o \
+      -name "*.txt" -o \
+      -name "*.cmake" \
+    \) \
+    -exec /usr/bin/sed \
+      -e "s|${srcdir}/build/lib|/usr/lib/paraview-${pv_ver}|g" \
+      -e "s|${srcdir}/build/.*/\(VTKConfig.cmake\)|/usr/lib/paraview-${pv_ver}/\1|g" \
+      -e "s|${srcdir}/${_gitname_pv}/CMake|/usr/lib/CMake|g" \
+      -e "s|${srcdir}/build|/usr|g" \
+      -e "s|${srcdir}|/usr|g" \
+      -e "s|${pkgdir}/usr|/usr|g" \
       -i '{}' \
   \;
 }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+    <mime-type type="application/x-paraview">
+        <comment>ParaView Document</comment>
+        <comment xml:lang="en_US">ParaView Document</comment>
+        <glob pattern="*.pvd" />
+        <glob pattern="*.pvs" />
+        <glob pattern="*.vti" />
+        <glob pattern="*.vtp" />
+        <glob pattern="*.vts" />
+        <glob pattern="*.vtu" />
+  </mime-type>
+</mime-info>

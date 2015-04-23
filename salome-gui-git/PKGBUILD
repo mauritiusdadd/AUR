@@ -92,14 +92,16 @@ build()
 
   source /etc/profile.d/salome-kernel.sh
 
+  _flags="-fPIC $(pkg-config --libs --cflags QtNetwork)"
+
   cmake "${srcdir}/${pkgname}" \
     -Wno-dev\
     -DPREFIX=${_prefix} \
     -DCMAKE_INSTALL_PREFIX="${pkgdir}/${_prefix}" \
     -DCMAKE_C_COMPILER=mpicc \
     -DCMAKE_CXX_COMPILER=mpicxx \
-    -DCMAKE_C_FLAGS="${CFLAGS} -fPIC -D_DEFAULT_SOURCE"\
-    -DCMAKE_CXX_FLAGS="${CXXFLAGS} -fPIC -D_DEFAULT_SOURCE"\
+    -DCMAKE_C_FLAGS="${CFLAGS} ${_flags} -D_DEFAULT_SOURCE"\
+    -DCMAKE_CXX_FLAGS="${CXXFLAGS} ${_flags} -D_DEFAULT_SOURCE"\
     -DPYTHON_INCLUDE_DIR=/usr/include/python2.7 \
     -DPYTHON_EXECUTABLE=/usr/bin/python2 \
     -DSPHINX_EXECUTABLE=/usr/bin/sphinx-build2 \
@@ -113,7 +115,6 @@ build()
     -DQWT_LIBRARY="/usr/lib/qwt/libqwt.so" \
     -DCAS_ROOT_DIR=/opt/opencascade \
     -DQT4_ROOT_DIR=/usr \
-    -DQT_QNETWORK_LIBRARY=/usr/lib/libQtNetwork.so \
     -DOPENGL_ROOT_DIR=/usr \
     -DCAS_INCLUDE_DIRS=/opt/opencascade/inc \
     -DSALOME_USE_PLOT2DVIEWER=ON \
@@ -159,10 +160,11 @@ package()
   #replacing the annoying hardcoded paths...
   msg "Fixing hardcoded paths..."
   find ${pkgdir} \
-    -type f \
-    -name "*.py" -or  \
-    -name "*.txt" -or \
-    -name "*.cmake"   \
+    -type f \( \
+      -name "*.py" -o  \
+      -name "*.txt" -o \
+      -name "*.cmake"  \
+    \) \
     -execdir /usr/bin/sed \
       -e "s|${srcdir}/${_builddir}|${_prefix}|g" \
       -e "s|${srcdir}|${_prefix}|g" \

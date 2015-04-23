@@ -137,10 +137,11 @@ package()
   #replacing the annoying hardcoded paths...
   msg "Fixing hardcoded paths..."
   find ${pkgdir} \
-    -type f \
-    -name "*.py" -or  \
-    -name "*.txt" -or \
-    -name "*.cmake"   \
+    -type f \(\
+      -name "*.py" -o  \
+      -name "*.txt" -o \
+      -name "*.cmake"  \
+    \) \
     -execdir /usr/bin/sed \
       -e "s|${srcdir}/${_builddir}|${_prefix}|g" \
       -e "s|${srcdir}|${_prefix}|g" \
