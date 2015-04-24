@@ -26,13 +26,15 @@ depends=('qtwebkit' 'openmpi' 'python2'
 makedepends=('cmake' 'grep' 'git' 'java-environment'
              'doxygen' 'gnuplot' 'tk' 'wget'
              'python2-matplotlib' 'python2-twisted'
-             'findutils' 'sed')
+             'python2-pygments' 'python2-zope-interface')
 optdepends=('python2: python bindings'
             'tk: tcl bindings'
             'gnuplot: plotting tools'
             'graphviz: drawing tools'
             'python2-matplotlib: for Matplotlib rendering'
-            'python2-twisted: for vtkWeb')
+            'python2-twisted: for vtkWeb'
+            'python2-pygments:'
+            'python2-zope-interface:')
 install='paraview.install'
 conflicts=('paraview')
 provides=('paraview')
@@ -200,12 +202,15 @@ build() {
     -DVTK_USE_SYSTEM_PUGIXML=OFF \
     -DVTK_USE_SYSTEM_QTTESTING=OFF \
     -DVTK_USE_SYSTEM_PROTOBUF=OFF \
+    -DVTK_USE_SYSTEM_PYGMENTS=ON \
     -DVTK_USE_SYSTEM_TIFF=ON \
     -DVTK_USE_SYSTEM_TWISTED=ON \
     -DVTK_USE_SYSTEM_ZLIB=ON \
     -DVTK_USE_SYSTEM_JSONCPP=ON \
     -DVTK_USE_SYSTEM_XDMF2=OFF \
+    -DVTK_USE_SYSTEM_SIX=ON \
     -DVTK_USE_SYSTEM_VISITLIB=OFF \
+    -DVTK_USE_SYSTEM_ZOPE=ON \
     -DVTK_USE_FFMPEG_ENCODER=ON \
     -DVTK_USE_TK=ON \
     -DVTK_USE_X=ON \
@@ -253,6 +258,11 @@ package() {
   install -Dm644 "${srcdir}/paraview.png" "${pkgdir}/usr/share/pixmaps/paraview.png"
   install -Dm644 "${srcdir}/paraview.xml" "${pkgdir}/usr/share/mime/application/x-paraview.xml"
   desktop-file-install --dir="${pkgdir}"/usr/share/applications "${srcdir}/paraview.desktop"
+
+  # Add missing __init__.py file to ensure that the modules are detected.
+  find "$pkgdir/usr/lib/paraview/site-packages" \
+    -type d \
+    -exec touch '{}/__init__.py' \;
 
   #replace the annoying hardcoded paths...
   msg "Fixing hardcoded paths..."

@@ -4,12 +4,12 @@
 # http://git.salome-platform.org/gitweb/
 
 _gitname="med"
-_gitbranch="V7_6_BR"
+_gitbranch="master"
 
 _basename=salome-med
 
 pkgname=salome-med-git
-pkgver=7.6.0b1.r3.g1da7883
+pkgver=7.6.0b1.r0.ge95c248
 pkgrel=1
 pkgdesc="Generic platform for Pre and Post-Processing for numerical simulation (MED Module)"
 url="http://www.salome-platform.org"
@@ -118,7 +118,7 @@ build()
     -DSALOME_BUILD_TESTS=ON \
     -DSALOME_USE_MPI=ON \
     -DSALOME_CMAKE_DEBUG=ON \
-    -DCMAKE_BUILD_TYPE='Release' \
+    -DCMAKE_BUILD_TYPE='Debug' \
     -Wno-dev
 
     make ${MAKEFLAGS}
