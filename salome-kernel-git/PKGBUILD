@@ -16,15 +16,19 @@ pkgrel=1
 pkgdesc="Generic platform for Pre and Post-Processing for numerical simulation (Kernel module)"
 url="http://www.salome-platform.org"
 depends=('tcsh' 'python2-scipy' 'swig' 'boost' 'omniorbpy' 'omninotify' 'hdf5' 'graphviz' 'cppunit' 'openmpi')
-optdepends=('salome-libbatch-git' 'salome-gui-git' 'salome-geom-git')
-makedepends=('sed' 'cmake' 'git' 'doxygen' 'python2-sphinx' 'python2-docutils' 'openmpi')
+optdepends=('salome-gui-git'
+            'salome-geom-git'
+            'salome-med-git')
+makedepends=('cmake' 'git' 'doxygen' 'python2-sphinx' 'python2-docutils')
 options=(!strip staticlibs emptydirs libtool docs)
 arch=('i686' 'x86_64')
 conflicts=('salome-kernel')
 provides=('salome-kernel')
-license=('LGPL')
-source=("${pkgname}::git://git.salome-platform.org/modules/${_gitname}.git#branch=${_gittag}" )
-sha256sums=('SKIP')
+license=('(L)GPL')
+source=("${pkgname}::git://git.salome-platform.org/modules/${_gitname}.git#branch=${_gittag}"
+        "salome.sh")
+sha256sums=('SKIP'
+            '177e312244ab0d93883d0d2c1bb0cc948f132a4933bace5904020724ee601ebf')
 
 _prefix="/opt/salome-platform/${_gitname}"
 _builddir="${pkgname}/build"
@@ -128,6 +132,9 @@ package()
 
   install -Dm755 "./${_basename}.conf" \
     "${pkgdir}/etc/ld.so.conf.d/${_basename}.conf"
+
+  install -Dm755 "${srcdir}/salome.sh" \
+    "${pkgdir}/usr/bin/salome"
 
   mv -f "${pkgdir}/${_prefix}/bin/salome/VERSION" \
     "${pkgdir}/${_prefix}/bin/salome/VERSION-${_basename}"

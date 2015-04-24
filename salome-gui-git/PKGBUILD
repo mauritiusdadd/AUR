@@ -17,12 +17,12 @@ pkgdesc="Generic platform for Pre and Post-Processing for numerical simulation (
 url="http://www.salome-platform.org"
 depends=('salome-kernel-git' 'qwt' 'opencascade' 'python2-pyqt4' 'paraview-salome-git')
 optdepends=('salome-geom-git')
-makedepends=('sed' 'git' 'doxygen' 'python2-sphinx' 'python2-docutils' 'openmpi')
+makedepends=('git' 'doxygen' 'python2-sphinx' 'python2-docutils')
 options=(!strip staticlibs emptydirs libtool docs)
 arch=('i686' 'x86_64')
 conflicts=('salome-gui')
 provides=('salome-gui')
-license=('LGPL')
+license=('(L)GPL')
 source=("${pkgname}::git://git.salome-platform.org/modules/${_gitname}.git#branch=${_gitbranch}"
         "gui-pyqtconfig.patch")
 sha256sums=('SKIP'

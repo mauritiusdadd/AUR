@@ -166,6 +166,14 @@ test_lxnstack()
   ccm_build "lxnstack"
 }
 
+test_w3m_mouse()
+{
+  setup_test_env
+  msg "testing w3m-mouse"
+
+  ccm_build "w3m-mouse"
+}
+
 test_paraview_salome_git()
 {
   setup_test_env
@@ -207,6 +215,18 @@ test_salome_geom_git()
   test_salome_gui_git
 
   ccm_build "salome-geom-git"
+}
+
+test_salome_med_git()
+{
+  setup_test_env
+  msg "testing salome-med-git..."
+
+  test_salome_gui_git
+
+  install_dep med-salome
+  install_dep parmetis3
+  ccm_build "salome-med-git"
 }
 
 if [[ "x$2" == "x32" ]]; then
@@ -252,6 +272,12 @@ case $1 in
     ;;
   salome-geom-git)
     test_salome_geom_git
+    ;;
+  salome-geom-git)
+    test_salome_geom_git
+    ;;
+  w3m-mouse)
+    test_w3m_mouse
     ;;
   all)
     test_calculix_doc
