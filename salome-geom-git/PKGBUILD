@@ -73,7 +73,8 @@ prepare()
 
 build() 
 {
-  source /etc/profile.d/salome-*.sh  
+  source /etc/profile.d/salome-kernel.sh  
+  source /etc/profile.d/salome-gui.sh  
     
   cd "${srcdir}/${_builddir}"
 
@@ -105,6 +106,7 @@ build()
     -DPYQT4_ROOT_DIR=/usr \
     -DPARAVIEW_ROOT_DIR=/usr \
     -DQWT_ROOT_DIR=/usr \
+    -DQWT_LIBRARY="/usr/lib/qwt/libqwt.so" \
     -DCAS_ROOT_DIR=/opt/opencascade \
     -DQT4_ROOT_DIR=/usr \
     -DOPENGL_ROOT_DIR=/usr \
