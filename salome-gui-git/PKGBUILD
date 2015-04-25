@@ -12,7 +12,7 @@ _gitbranch="V7_6_BR"
 _basename="salome-${_modulename}"
 
 pkgname="salome-${_modulename}-git"
-pkgver=7.6.0b1.r1.g780615f
+pkgver=7.6.0b1.r6.g57167b9
 pkgrel=1
 pkgdesc="Generic platform for Pre and Post-Processing for numerical simulation (gui module)"
 url="http://www.salome-platform.org"

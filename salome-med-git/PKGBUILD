@@ -6,13 +6,14 @@
 _modulename="med"
 
 _gitname="${_modulename}"
-_gitbranch="V7_6_BR" 
+_gitbranch="V7_5_BR" 
+#_gitbranch="V7_6_BR" # crashes :(
 #_gitbranch="master"
 
 _basename="salome-${_modulename}"
 
 pkgname="salome-${_modulename}-git"
-pkgver=7.6.0b1.r0.ge95c248
+pkgver=7.5.1.r0.g0ef06bf
 pkgrel=1
 pkgdesc="Generic platform for Pre and Post-Processing for numerical simulation (MED Module)"
 url="http://www.salome-platform.org"

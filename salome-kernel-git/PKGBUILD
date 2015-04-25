@@ -27,7 +27,7 @@ conflicts=("salome-${_modulename}")
 provides=("salome-${_modulename}")
 license=('(L)GPL')
 
-source=("${pkgname}::git://git.salome-platform.org/modules/${_gitname}.git#branch=${_gittag}"
+source=("${pkgname}::git://git.salome-platform.org/modules/${_gitname}.git#branch=${_gitbranch}"
         "salome.sh")
 
 sha256sums=('SKIP'
