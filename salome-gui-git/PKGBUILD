@@ -3,14 +3,15 @@
 
 # http://git.salome-platform.org/gitweb/
 
-_gitname="gui"
+_modulename="gui"
+
+_gitname="${_modulename}"
 _gitbranch="V7_6_BR"
-_gitbranch="master"
+#_gitbranch="master"
 
-_modulename=${_gitname}
-_basename="salome-${_gitname}"
+_basename="salome-${_modulename}"
 
-pkgname=salome-gui-git
+pkgname="salome-${_modulename}-git"
 pkgver=7.6.0b1.r1.g780615f
 pkgrel=1
 pkgdesc="Generic platform for Pre and Post-Processing for numerical simulation (gui module)"
@@ -23,12 +24,14 @@ arch=('i686' 'x86_64')
 conflicts=('salome-gui')
 provides=('salome-gui')
 license=('(L)GPL')
+
 source=("${pkgname}::git://git.salome-platform.org/modules/${_gitname}.git#branch=${_gitbranch}"
         "gui-pyqtconfig.patch")
+
 sha256sums=('SKIP'
             'd9df8a716479939be4b6f8da3447e34b52ca633d576e6faa557c68908a910ddb')
 
-_prefix="/opt/salome-platform/${_gitname}"
+_prefix="/opt/salome-platform/${_modulename}"
 _builddir="${pkgname}/build"
 
 pkgver()
@@ -140,8 +143,11 @@ build()
 package()
 {
   #needed to correctly loading modules during installation process
-  export PYTHONPATH=${pkgdir}/usr/lib/python2.7/site-packages/salome:${pkgdir}/usr/bin/salome
-
+  _pythondir="${pkgdir}/${_prefix}/lib/python2.7/site-packages/salome"
+  mkdir -p "${_pythondir}/salome"
+  touch "${_pythondir}/salome/__init__.py"
+  export PYTHONPATH="${_pythondir}"
+  source /etc/profile.d/salome-kernel.sh  
   cd "${srcdir}/${_builddir}"
 
   # NOTE: DESTDIR="${pkgdir}" does not work correctly!
