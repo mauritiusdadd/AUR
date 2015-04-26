@@ -21,8 +21,8 @@ optdepends=('salome-geom-git')
 makedepends=('git' 'doxygen' 'python2-sphinx' 'python2-docutils')
 options=(!strip staticlibs emptydirs libtool docs)
 arch=('i686' 'x86_64')
-conflicts=('salome-gui')
-provides=('salome-gui')
+conflicts=("salome-${_modulename}")
+provides=("salome-${_modulename}")
 license=('(L)GPL')
 
 source=("${pkgname}::git://git.salome-platform.org/modules/${_gitname}.git#branch=${_gitbranch}"

@@ -31,7 +31,7 @@ source=("${pkgname}::git://git.salome-platform.org/modules/${_gitname}.git#branc
         "salome.sh")
 
 sha256sums=('SKIP'
-            '16915d5960b177ab2df236779f17fd58ddbaceb5b6cbe7a94dc8acb8c1658fb5')
+            '4131bbf9ee3e4ca50812d2daecb2733182d8fc00041865d2c4369ec70c174594')
 
 _prefix="/opt/salome-platform/${_modulename}"
 _builddir="${pkgname}/build"
