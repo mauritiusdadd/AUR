@@ -1,0 +1,26 @@
+# Maintainer: Mathieu Pasquet <mathieui@mathieui.net>
+# Contributor: Bernhard Walle <bernhard.walle@gmx.de>
+# Contributor: Michael Eckert <michael.eckert@linuxmail.org>
+pkgname=makedumpfile
+pkgver=1.5.8
+pkgrel=1
+pkgdesc="A tool to make a small dumpfile of kdump"
+license=('GPL2')
+depends=('perl' 'elfutils')
+arch=('i686' 'x86_64')
+url="http://sourceforge.net/projects/makedumpfile"
+source=("http://freefr.dl.sourceforge.net/project/makedumpfile/makedumpfile/${pkgver}/makedumpfile-${pkgver}.tar.gz")
+md5sums=('642d975349dff744c6027d4486499258')
+
+build() {
+  cd $srcdir/$pkgname-$pkgver
+  make LINKTYPE=dynamic
+}
+
+package() {
+  cd $srcdir/$pkgname-$pkgver
+  make install DESTDIR="${pkgdir}"
+
+  mv "${pkgdir}/usr/sbin" "${pkgdir}/usr/bin"
+}
+
