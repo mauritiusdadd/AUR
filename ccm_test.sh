@@ -166,6 +166,13 @@ test_lxnstack()
   ccm_build "lxnstack"
 }
 
+test_makedumpfile()
+{
+  setup_test_env
+  msg "testing makedumpfile..."
+
+  ccm_build "makedumpfile"
+}
 test_w3m_mouse()
 {
   setup_test_env
@@ -243,9 +250,6 @@ msg "clearing log file..."
 rm ${LOGFILE}
 
 case $1 in
-  vtk-git)
-    test_vtk_git
-    ;;
   calculix)
     test_calculix
     ;;
@@ -255,14 +259,17 @@ case $1 in
   libsnl-svn)
     test_libsnl_svn
     ;;
-  pk2-la-svn)
-    test_pk2_la_svn
-    ;;
   lxnstack)
     test_lxnstack
     ;;
+  makedumpfile)
+    test_makedumpfile
+    ;;
   paraview-salome--git)
     test_paraview_salome_git
+    ;;
+  pk2-la-svn)
+    test_pk2_la_svn
     ;;
   salome-kernel-git)
     test_salome_kernel_git
@@ -279,9 +286,14 @@ case $1 in
   w3m-mouse)
     test_w3m_mouse
     ;;
+  vtk-git)
+    test_vtk_git
+    ;;
   all)
+    # testing all the packages of which I am
+    # the current maintainer
     test_calculix_doc
-    #test_vtk_git  # I am no more the maintainer
+    #test_vtk_git
     test_lxstack
     test_pk2_la_svn
     test_w3m_mouse
