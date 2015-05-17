@@ -281,9 +281,10 @@ case $1 in
     ;;
   all)
     test_calculix_doc
-    test_vtk_git
+    #test_vtk_git  # I am no more the maintainer
     test_lxstack
     test_pk2_la_svn
+    test_w3m_mouse
     ;;
   *)
     echo "Unkown package '$1'"
