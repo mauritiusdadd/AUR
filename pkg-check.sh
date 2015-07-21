@@ -19,14 +19,40 @@ isOutOfDate()
   [[ ${PIPESTATUS[0]} -eq 0 ]] ||  echo "??"
 }
 
+getVerExpac()
+{
+  curver="$(expac -S %v $1)"
+
+}
+
+checkSourceforge()
+{
+  oldver="$(getCurrentVersion ${pkgname})"
+  fname="/tmp/${1}.rss"
+  url="http://sourceforge.net/projects/$1/rss?path=/$1"
+
+  wget -q --no-clobber "${url}" -O "${fname}"
+  curver="$(awk -F '/' '/.tar.gz/ {print $3; exit}' ${fname})"
+
+  if [[ $? -eq 0 ]]; then
+    if [[ ${oldver} != ${curver} ]]; then
+      echo "${oldver} -> ${curver})"
+    else
+      echo "updated (${curver})"
+    fi
+  else
+    echo "[!]"
+  fi
+}
+
 checkExpac()
 {
   db_var="EXPAC_VER_$1"
   curver="$(expac -S %v $1)"
   oldver="${!db_var}"
   if [[ $? -eq 0 ]]; then
-    if [[ $oldver != $curver ]]; then
-      echo "$oldver -> $curver"
+    if [[ ${oldver} != ${curver} ]]; then
+      echo "${oldver} -> ${curver}"
     else
       echo "updated"
     fi
@@ -42,7 +68,7 @@ needsUpdate()
       checkExpac w3m
       ;;
     "makedumpfile")
-      ;;
+      checkSourceforge $1;;
     "calculix")
       ;;
     "calculix-doc")
