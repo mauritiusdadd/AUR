@@ -148,6 +148,14 @@ test_calculix_doc()
   ccm_build "calculix-doc"
 }
 
+test_kicad_smisioto_modules()
+{
+  setup_test_env
+  msg "testing kicad-smisioto-modules..."
+
+  ccm_build "kicad-smisioto-modules"
+}
+
 test_pk2_la_svn()
 {
   setup_test_env
@@ -255,6 +263,9 @@ case $1 in
     ;;
   calculix-doc)
     test_calculix_doc
+    ;;
+  kicad-smisioto-modules)
+    test_kicad_smisioto_modules
     ;;
   libsnl-svn)
     test_libsnl_svn
