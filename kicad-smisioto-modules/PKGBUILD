@@ -6,7 +6,7 @@ pkgrel=1
 pkgdesc="Various kicad footprints and 3d models"
 arch=('any')
 url="http://smisioto.no-ip.org/elettronica/kicad/kicad-en.htm"
-license=('CC-BY-SA')
+license=('CC-BY-SA' 'GPLv3')
 depends=('kicad')
 source=(
 http://smisioto.no-ip.org/kicad_libs/modules/mod_battery_holders.zip
