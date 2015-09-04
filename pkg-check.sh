@@ -61,6 +61,65 @@ checkExpac()
   fi
 }
 
+getSRCINFO()
+{
+  wget -O- -q "https://aur.archlinux.org/cgit/aur.git/plain/.SRCINFO?h=$1"
+}
+
+checkUrlLink()
+{
+  wget -O- -q "$1"  | perl -lne "
+    /href[ ]*=[ ]*[\047\042]$2[\042\047]/;
+    if  (\$1 ne '')
+    {
+      print \$1;
+      exit 0;
+    }"
+}
+
+checkCalculix()
+{
+
+  oldver="$(getCurrentVersion ${pkgname})"
+
+  url="http://www.dhondt.de/index.html"
+  ccx_frmat='ccx_(.+?)\.src\.tar\.bz2'
+  cgx_frmat='cgx_(.+?)\.all\.tar\.bz2'
+
+  ccx_ver="$(checkUrlLink ${url} ${ccx_frmat})"
+  cgx_ver="$(checkUrlLink ${url} ${cgx_frmat})"
+
+  ccx_ups="ccx_${ccx_ver}.src.tar.bz2"
+  cgx_ups="cgx_${cgx_ver}.all.tar.bz2"
+
+  srcinfo="$(getSRCINFO 'calculix')"
+
+  ccx_src="$(echo -e $srcinfo | grep -oP 'ccx_.+?\.bz2')"
+  cgx_src="$(echo -e $srcinfo | grep -oP 'cgx_.+?\.bz2')"
+
+  outdate=0
+
+  if [[ "${ccx_ups}" != "${ccx_src}" ]]; then
+    let outdate+=1
+  fi
+
+  if [[ "${cgx_ups}" != "${cgx_src}" ]]; then
+    let outdate+=2
+  fi
+
+  if [[ $outdate -eq 0 ]]; then
+    echo "updated"
+  elif [[ $outdate -eq 1 ]]; then
+    echo "${oldver} -> cgx:${ccx_ver}"
+  elif [[ $outdate -eq 2 ]]; then
+    echo "${oldver} -> cgx:${cgx_ver}"
+  elif [[ $outdate -eq 3 ]]; then
+    echo "${oldver} -> ccx:${ccx_ver} cgx:${cgx_ver}"
+  else
+    echo "[!]"
+  fi
+}
+
 needsUpdate()
 {
   case $1 in
@@ -68,8 +127,10 @@ needsUpdate()
       checkExpac w3m
       ;;
     "makedumpfile")
-      checkSourceforge $1;;
+      checkSourceforge $1
+      ;;
     "calculix")
+      checkCalculix
       ;;
     "calculix-doc")
       ;;

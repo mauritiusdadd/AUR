@@ -309,6 +309,19 @@ case $1 in
     test_pk2_la_svn
     test_w3m_mouse
     ;;
+  --help)
+    echo ""
+    echo "Usage: ccm_test PKGNAME [ARCH]"
+    echo ""
+    echo "  ARGUMENTS:"
+    echo ""
+    echo "    PKGNAME: the name of the package to build"
+    echo ""
+    echo "    ARCH: the architecture og the target package"
+    echo "          accepted value are 32 and 64. Default"
+    echo "          value is 64"
+    echo ""
+    ;;
   *)
     echo "Unkown package '$1'"
     ;;
