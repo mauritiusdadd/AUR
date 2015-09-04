@@ -27,12 +27,30 @@ getVerExpac()
 
 checkSourceforge()
 {
-  oldver="$(getCurrentVersion ${pkgname})"
+  oldver="$(getCurrentVersion $1)"
   fname="/tmp/${1}.rss"
   url="http://sourceforge.net/projects/$1/rss?path=/$1"
 
   wget -q --no-clobber "${url}" -O "${fname}"
   curver="$(awk -F '/' '/.tar.gz/ {print $3; exit}' ${fname})"
+
+  if [[ $? -eq 0 ]]; then
+    if [[ ${oldver} != ${curver} ]]; then
+      echo "${oldver} -> ${curver})"
+    else
+      echo "updated (${curver})"
+    fi
+  else
+    echo "[!]"
+  fi
+}
+
+checkGitHubRelease()
+{
+  oldver="$(getCurrentVersion $2)"
+  frmt="\/$1\/$2\/tree\/(.*?)"
+  url="https://github.com/$1/$2/releases"
+  curver="$(checkUrlLink $url $frmt)"
 
   if [[ $? -eq 0 ]]; then
     if [[ ${oldver} != ${curver} ]]; then
@@ -133,6 +151,12 @@ needsUpdate()
       checkCalculix
       ;;
     "calculix-doc")
+      ;;
+    "crtwo2fits")
+      checkGitHubRelease 'mauritiusdadd' $1
+      ;;
+    "lxnstack")
+      checkGitHubRelease 'mauritiusdadd' $1
       ;;
     *)
       echo "??"
