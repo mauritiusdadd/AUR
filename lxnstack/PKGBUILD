@@ -15,7 +15,7 @@ options=(docs)
 install="$pkgname.install"
 
 source=("http://master.dl.sourceforge.net/project/lxnstack/tarballs/$pkgname-$pkgver.tar.gz")
-sha256sums=('c810a77249fe98209a91d37c10a309d2fba9e28e5a9b29c6ad191345e0316c66')
+sha256sums=('a865137277dd2e73532c83e5d35b33ab9c3d280ac564f8d47b9ac31a52c194bd')
 
 
 package() {
