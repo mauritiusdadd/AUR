@@ -181,13 +181,14 @@ test_makedumpfile()
 
   ccm_build "makedumpfile"
 }
-test_w3m_mouse()
-{
-  setup_test_env
-  msg "testing w3m-mouse"
 
-  ccm_build "w3m-mouse"
-}
+#test_w3m_mouse()
+#{
+#  setup_test_env
+#  msg "testing w3m-mouse"
+#
+#  ccm_build "w3m-mouse"
+#}
 
 test_paraview_salome_git()
 {
@@ -294,9 +295,6 @@ case $1 in
   salome-geom-git)
     test_salome_geom_git
     ;;
-  w3m-mouse)
-    test_w3m_mouse
-    ;;
   vtk-git)
     test_vtk_git
     ;;
@@ -307,7 +305,7 @@ case $1 in
     #test_vtk_git
     test_lxstack
     test_pk2_la_svn
-    test_w3m_mouse
+    #test_w3m_mouse
     ;;
   --help)
     echo ""

@@ -141,9 +141,9 @@ checkCalculix()
 needsUpdate()
 {
   case $1 in
-    "w3m-mouse")
-      checkExpac w3m
-      ;;
+    #"w3m-mouse")
+    #  checkExpac w3m
+    #  ;;
     "makedumpfile")
       checkSourceforge $1
       ;;
