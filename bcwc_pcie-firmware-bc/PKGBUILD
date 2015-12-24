@@ -1,0 +1,48 @@
+# Maintainer: Maurizio D'Addona <mauritiusdadd@gmail.com>
+
+pkgname="bcwc_pcie-firmware-bc"
+pkgver=1.38
+pkgrel=1
+pkgdesc="BootCamp firmware for the reverse engineered Linux driver for the Broadcom 1570 PCIe webcam"
+url="https://github.com/patjak/bcwc_pcie"
+makedepends=('git' 'unrar')
+arch=('i686' 'x86_64')
+provides=("bcwc_pcie-firmware")
+conflicts=("bcwc_pcie-firmware")
+license=('custom')
+
+source=("extraction-tool::git+https://gist.github.com/ea82507d46f0d77fb922.git"
+        "http://support.apple.com/downloads/DL1831/it_IT/AppleBcUpdate.exe")
+noextract="AppleBcUpdate.exe"
+
+sha256sums=('SKIP'
+            'd4016f0f7c79440ddee2f3b9a2ab2d152875da88437ced9adb1512af50e03dd2')
+
+prepare()
+{
+  chmod +x "${srcdir}/extraction-tool/extract-firmware.sh"
+
+  #cd "${srcdir}/BootCamp/Drivers/Apple"
+
+  unrar e -o+ "AppleBcUpdate.exe"
+  unrar e -o+ "AppleCamera64.exe"
+
+  cp "AppleCamera.sys" "${srcdir}/extraction-tool/"
+}
+
+build()
+{
+  cd "${srcdir}/extraction-tool"
+  ./extract-firmware.sh "AppleCamera.sys"
+}
+
+package()
+{
+  cd "${srcdir}/extraction-tool"
+  install -dm755 "${pkgdir}/usr/lib/firmware/facetimehd/"
+  install -m644 'firmware.bin' "${pkgdir}/usr/lib/firmware/facetimehd"
+
+  install -dm755 "${pkgdir}/usr/share/licences/${pkgname}/"
+  install -m664 "${srcdir}/"*"License.txt" \
+                "${pkgdir}/usr/share/licences/${pkgname}/"
+}
