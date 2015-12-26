@@ -5,10 +5,10 @@
 
 pkgname="bcwc_pcie-firmware-osx"
 pkgver=1.43
-pkgrel=1
+pkgrel=2
 pkgdesc="OS X firmware for the reverse engineered Linux driver for the Broadcom 1570 PCIe webcam"
 url="https://github.com/patjak/bcwc_pcie"
-makedepends=('git' 'gzip' 'python2' 'cpio')
+makedepends=('git' 'gzip' 'python2' 'cpio' 'xar' 'p7zip')
 arch=('any')
 provides=("bcwc_pcie-firmware")
 conflicts=("bcwc_pcie-firmware")
