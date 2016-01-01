@@ -4,68 +4,32 @@
 #       See the archwiki for more information on how to obtain it.
 
 pkgname="bcwc_pcie-firmware-osx"
-pkgver=1.43
-pkgrel=2
+pkgver=1.43.2
+pkgrel=1
 pkgdesc="OS X firmware for the reverse engineered Linux driver for the Broadcom 1570 PCIe webcam"
 url="https://github.com/patjak/bcwc_pcie"
-makedepends=('git' 'gzip' 'python2' 'cpio' 'xar' 'p7zip')
+makedepends=('git' 'cpio' )
 arch=('any')
 provides=("bcwc_pcie-firmware")
 conflicts=("bcwc_pcie-firmware")
 license=('custom')
 
-source=("extraction-tool::git+https://gist.github.com/ea82507d46f0d77fb922.git"
-        "pbzx2::git+https://gist.github.com/pudquick/ff412bcb29c9c1fa4b8d.git"
-        "http://support.apple.com/downloads/DL1850/en_US/osxupdcombo10.11.2.dmg")
+source=("${pkgname}::git+https://github.com/patjak/bcwc_pcie.git#commit=7317a7677103655e530f614c0845c287beded723")
 
-sha256sums=('SKIP'
-            'SKIP'
-            '073ec5e99bc5e2c0d75e082fa55f685bce75dbdae5ab3cc528892b901878d21d')
-
-prepare()
-{
-  cd "${srcdir}"
-  chmod +x "${srcdir}/extraction-tool/extract-firmware.sh"
-  chmod +x "${srcdir}/pbzx2/parse_pbzx2.py"
-}
+sha256sums=('SKIP')
 
 build()
 {
-  cd "${srcdir}"
-  msg2 "Decompressing the image..."
-  7z e -y "osxupdcombo10.11.2.dmg" "5.hfs" > /dev/null
-
-  msg2 "Extracting upadte package..."
-  tail -c +189001729 "5.hfs" | head -c 1469917156 > OSXUpd.xar
-  rm -f "5.hfs"
-
-  msg2 "Uncompressing XAR archive..."
-  xar -x -f "OSXUpd.xar"
-  rm -f "OSXUpd.xar"
-
-  msg2 "Decoding Payload..."
-  python2 "pbzx2/parse_pbzx2.py" "OSXUpdCombo10.11.2.pkg/Payload" > /dev/null
-  rm "OSXUpdCombo10.11.2.pkg/Payload"
-
-  msg2 "Decompressing archives..."
-  cd "${srcdir}/OSXUpdCombo10.11.2.pkg" 
-  find . -name "Payload.part*.xz" -exec xz --decompress --verbose {} \;
-  cat "Payload.part"* | cpio -id
-  cp "./System/Library/Extensions/AppleCameraInterface.kext/Contents/MacOS/AppleCameraInterface" \
-     "${srcdir}"
-
-  msg2 "Extracting firware..."
-  cd "${srcdir}/extraction-tool"
-  ./extract-firmware.sh "${srcdir}/AppleCameraInterface"
+  cd "${srcdir}/${pkgname}/firmware"
+  make
 }
 
 package()
 {
-  cd "${srcdir}/extraction-tool"
-  install -dm755 "${pkgdir}/usr/lib/firmware/facetimehd/"
-  install -m644 'firmware.bin' "${pkgdir}/usr/lib/firmware/facetimehd"
-
+  cd "${srcdir}/${pkgname}/firmware"
+  make install DESTDIR="${pkgdir}" FW_DIR_BASE="/usr/lib/firmware"
+  
   install -dm755 "${pkgdir}/usr/share/licenses/${pkgname}"
-  install -m644 "${srcdir}/Resources/English.lproj/License.rtf" \
-                "${pkgdir}/usr/share/licenses/${pkgname}"
+  #install -m644 "${srcdir}/Resources/English.lproj/License.rtf" \
+  #              "${pkgdir}/usr/share/licenses/${pkgname}"
 }
