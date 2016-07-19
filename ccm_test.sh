@@ -7,17 +7,18 @@ if [[ -z "${PKGDIR}" ]]; then
   PKGDIR="${AURDIR}"
 fi
 
+TESTER="$(whoami)"
+
 LOGFILE="${PKGDIR}/ccm.log"
-TMPDIR="/mnt/CACHE/AUR"
-AURHLP="/usr/bin/cower -ddf"
+#TMPDIR="/mnt/CACHE/AUR"
+TMPDIR="/tmp"
+AURHLP="/usr/bin/cower -t ${TMPDIR} -ddf"
 CCM_BLD_64="sudo /usr/bin/ccm64 S"
 CCM_BLD_32="sudo /usr/bin/ccm32 S"
 CCM_CLR_64="sudo /usr/bin/ccm64 d"
 CCM_CLR_32="sudo /usr/bin/ccm32 d"
 CCM_UPD_64="sudo /usr/bin/ccm64 u"
 CCM_UPD_32="sudo /usr/bin/ccm32 u"
-
-TESTER="$(whoami)"
 
 totee()
 {
@@ -64,6 +65,7 @@ setup_test_env()
 
 __ccm_build()
 {
+  git reset --hard origin/master
   if [[ "x${arch}" == "x64" ]]; then
     $CCM_BLD_64 | totee
   elif [[ "x${arch}" == "x32" ]]; then
