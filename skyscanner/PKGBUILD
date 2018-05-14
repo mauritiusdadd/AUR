@@ -1,0 +1,34 @@
+# Maintainer: Maurizio D'Addona <mauritiusdadd@libero.it>
+
+pkgname=python-skyscanner
+pkgver=r117.26ce4a5
+pkgrel=1
+pkgdesc="Python bindings to the SkyScanner API"
+arch=(any)
+url="https://partners.skyscanner.net/affiliates/travel-apis/"
+license=('custom:APACHE')
+provides=('python-skyscanner')
+conflicts=('python-skyscanner')
+depends=('python')
+makedepends=('git')
+options=(docs)
+
+source=("$pkgname::git+https://github.com/Skyscanner/skyscanner-python-sdk.git")
+sha256sums=('SKIP')
+
+
+pkgver() {
+  cd "${pkgname}"
+  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+build() {
+  cd "${pkgname}"
+  python setup.py build
+}
+
+package() {
+  cd "${pkgname}"
+  python setup.py install --root="$pkgdir/" --optimize=1 --skip-build
+}
+
