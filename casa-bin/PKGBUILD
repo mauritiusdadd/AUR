@@ -1,0 +1,27 @@
+# Maintainer: Maurizio D'Addona <mauritiudadd@gmail.com>
+
+pkgname=casa-bin
+pkgver=5.1.1
+pkgrel=1
+pkgdesc="Common Astronomy Software Applications (ALMA version)"
+arch=('x86_64')
+url="http://casa.nrao.edu/index.shtml"
+license=('GPL')
+depends=('libpng15' 'xorg-server-xvfb')
+makedepends=()
+checkdepends=()
+optdepends=()
+options=(docs)
+backup=('etc/profile.d/casa.sh')
+source=("https://casa.nrao.edu/download/distro/linux/release/el7/casa-release-${pkgver}-5.el7.tar.gz" "casa.sh")
+sha256sums=('940c2086040928c5db6c45d4d2700d8e2a9aa0f93bdab2cb3465b8fc359b6054'
+            '05442122477e8dea64591c8cc2a0df649ab611435256c0bd7fa6bd6b38be0975')
+
+package() {
+
+  install -Dm644 "casa.sh" "${pkgdir}/etc/profile.d/casa.sh"
+  install -d "${pkgdir}/opt/casa"
+  cp -dr --no-preserve=ownership "casa-release-${pkgver}-5.el7" "${pkgdir}/opt/casa"
+}
+
+#vim ts=2:sw=2

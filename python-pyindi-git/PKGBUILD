@@ -1,0 +1,47 @@
+# Maintainer: Maurizio D'Addona <mauritiusdadd@libero.it>
+
+pkgname=python-pyindi-client-svn
+pkgver=r55
+pkgrel=1
+pkgdesc="Python bindings to INDI libraries"
+arch=('x86_64' 'arm')
+url="http://indilib.org/develop/indi-python-bindings.html"
+license=('GPL3')
+provides=('pyindi-client')
+depends=('python' 'libindi')
+makedepends=('subversion' 'python-setuptools' 'swig' 'cmake')
+options=(docs)
+
+source=("${pkgname}::svn+svn://svn.code.sf.net/p/pyindi-client/code/trunk/swig-indi/swig-indi-python/")
+sha256sums=('SKIP')
+
+pkgver() {
+  cd "$pkgname"
+  local ver="$(svnversion)"
+  printf "r%s" "${ver//[[:alpha:]]}"
+}
+
+build() {
+  cd "${pkgname}"
+
+  mkdir -p "libindipython"
+  cd "libindipython"
+  cmake ".."
+  make
+}
+
+package() {
+  cd "$pkgname"
+
+  SITE_DIR="$(python -c 'import site; print(site.getsitepackages()[0])')"
+  PKG_SITE="${pkgdir}/${SITE_DIR}"
+
+  mkdir -p "${PKG_SITE}"
+  export PYTHONPATH="${PKG_SITE}:${PYTHONPATH}"
+
+  # Won't compile with the --root flag, using the hacky --prefix
+  python setup.py install  --prefix="${pkgdir}/usr/" --optimize=1 --skip-build
+
+  
+}
+

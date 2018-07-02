@@ -1,0 +1,38 @@
+# Maintainer: Maurizio D'Addona <mauritiusdadd@gmail.com>
+
+
+pkgname=qfitsview
+pkgdesc="A FITS file viewer similar to SAOimage"
+pkgver=6.4.0
+pkgrel=1
+arch=('x86_64')
+url="http://www.mpe.mpg.de/~ott/QFitsView/"
+license=('GPL2')
+
+source=("http://www.mpe.mpg.de/~ott/dpuser/download/dpusersrc_3.3.tgz")
+
+sha256sums=('b9d427855f9e18217f2ced68a0e88fa2b15615cadbe8b795194f4ac89dbef45f')
+
+prepare()
+{
+    msg "Configuring packages"
+    msg2 "Done"
+}
+
+build()
+{   
+    msg "Building..."
+
+    ./configure
+    
+    cd "${srcdir}/dpusersrc"
+    make
+
+    msg2 "Build complete"
+}
+
+
+package() 
+{
+    msg2 "Done"  
+}

@@ -1,0 +1,27 @@
+# Maintainer: Maurizio D'Addona <mauritiusdadd@libero.it>
+pkgname="casjobs-bin"
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="A java command line tool for completing various tasks using CasJobs web services"
+arch=(x86_64)
+url="http://skyserver.sdss.org/CasJobs/casjobscl.aspx"
+license=('CUST')
+depends=('java-runtime')
+
+source=('http://skyserver.sdss.org/CasJobs/download/casjobs.jar'
+        'http://skyserver.sdss.org/CasJobs/download/CasJobs.config.x'
+        'casjobs.sh')
+
+noextract=("casjobs.jar")
+
+sha256sums=('353d9c18ab3b2a6c8a5952299dfc346ec08fc112c12ebe5614ae918ef1d4580d'
+            '9df93120205e1e05fff96e855d60e62f9467037f3a5f0351c9e3337da4daba93'
+            '58eddb68749e0c873c67d4d34c348a42fc7cca1b2a3b6644e4917dda079c50d4')
+
+package() {
+  install -Dm755 casjobs.sh "${pkgdir}/usr/bin/casjobs"
+  install -d "${pkgdir}/usr/share/java/Casjobs"
+  install -Dm644 casjobs.jar "${pkgdir}/usr/share/java/CasJobs/casjobs.jar"
+  install -Dm644 CasJobs.config.x "${pkgdir}/etc/CasJobs.config"
+}
+

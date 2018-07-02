@@ -1,0 +1,58 @@
+# Maintainer: Maurizio D'Addona <mauritiusdadd@libero.it>
+
+pkgbase=camb
+pkgname=('camb' 'python-pycamb')
+pkgver=0.1.1
+pkgrel=1
+pkgdesc="Code for Anisotropies in the Microwave Background"
+arch=('x86_64')
+url="http://camb.info/"
+license=('CUSTOM')
+
+makedepends=('python' 'python-setuptools' 'gcc-fortran')
+options=(docs)
+
+source=("https://github.com/cmbant/CAMB/archive/Jan2017.tar.gz")
+sha256sums=('595bc497ad03b1a32cfeca3643165f99d6ff58f8cc1675856482db9abd2ba5dc')
+
+
+build() {
+  msg "Building CAMB executable"
+  cd "${srcdir}/CAMB-Jan2017"
+  make
+
+  msg "Building pyCAMB wrapper"
+  cd "${srcdir}/CAMB-Jan2017/pycamb"
+  python setup.py build
+
+}
+
+package_camb() {
+  depends=('gcc-libs')
+  provides=('camb')
+  conflicts=('camb')
+
+  cd "${srcdir}/CAMB-Jan2017"
+
+  install -Dm755 camb "${pkgdir}/usr/bin/camb"
+
+  install -Dm644 params.ini "${pkgdir}/usr/share/camb/params.ini"
+  install -Dm644 base_planck_lowl_lowLike.ini "${pkgdir}/usr/share/camb/base_planck_lowl_lowLike.ini"
+  install -Dm644 base_plikHM_TT_lowTEB_lensing.ini "${pkgdir}/usr/share/camb/base_plikHM_TT_lowTEB_lensing.ini"
+  install -Dm644 HighLExtrapTemplate_lenspotentialCls.dat "${pkgdir}/usr/share/camb/HighLExtrapTemplate_lenspotentialCls.dat"
+
+  install -Dm644 "Releaselib/camblib.so" "${pkgdir}/usr/lib/camblib.so"
+
+  install -Dm644 readme.html "${pkgdir}/usr/share/doc/camb/readme.html"
+}
+
+
+package_python-pycamb() {
+  depends=('camb')
+  provides=('python-pycamb')
+  conflicts=('python-pycamb')
+
+  cd "${srcdir}/CAMB-Jan2017/pycamb"
+  python setup.py install --prefix=/usr --root="${pkgdir}"
+}
+

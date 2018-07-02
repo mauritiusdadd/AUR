@@ -158,6 +158,24 @@ test_kicad_smisioto_modules()
   ccm_build "kicad-smisioto-modules"
 }
 
+test_libnova14_compat()
+{
+  setup_test_env
+  msg "testing libnova14-compat..."
+
+  ccm_build "libnova14-compat"
+}
+
+test_libindi_atik_bin()
+{
+  setup_test_env
+  msg "testing linbindi-atik-bin..."
+
+  install_dep libnova14-compat
+
+  ccm_build "libindi-atik-bin"
+}
+
 test_pk2_la_svn()
 {
   setup_test_env
@@ -184,67 +202,17 @@ test_makedumpfile()
   ccm_build "makedumpfile"
 }
 
-#test_w3m_mouse()
-#{
-#  setup_test_env
-#  msg "testing w3m-mouse"
-#
-#  ccm_build "w3m-mouse"
-#}
-
-test_paraview_salome_git()
+test_python_sewpy_git()
 {
   setup_test_env
-  msg "testing paraview-salome-git..."
+  msg "testing python-sewpy"
 
-  install_dep netcdf-cxx-legacy
-  install_dep python2-selenium
-  install_dep libcgns-paraview
-  ccm_build "paraview-salome-git"
-}
+  install_dep erfa
+  install_dep python-astropy
+  install_dep openblas-lapack
+  install_dep astromatic-sextractor
 
-test_salome_kernel_git()
-{
-  setup_test_env
-  msg "testing salome-kernel-git..."
-
-  install_dep omniorb
-  install_dep omniorbpy
-  install_dep omninotify
-  ccm_build "salome-kernel-git"
-}
-
-test_salome_gui_git()
-{
-  setup_test_env
-  msg "testing salome-gui-git..."
-
-  test_salome_kernel_git
-  test_paraview_salome_git
-
-  ccm_build "salome-gui-git"
-}
-
-test_salome_geom_git()
-{
-  setup_test_env
-  msg "testing salome-geom-git..."
-
-  test_salome_gui_git
-
-  ccm_build "salome-geom-git"
-}
-
-test_salome_med_git()
-{
-  setup_test_env
-  msg "testing salome-med-git..."
-
-  test_salome_gui_git
-
-  install_dep med-salome
-  install_dep parmetis3
-  ccm_build "salome-med-git"
+  ccm_build "python-sewpy-git"
 }
 
 if [[ "x$2" == "x32" ]]; then
@@ -256,6 +224,7 @@ else
 fi
 
 LOGFILE="${PKGDIR}/ccm${arch}.log"
+
 
 msg "clearing log file..."
 rm ${LOGFILE}
@@ -270,6 +239,12 @@ case $1 in
   kicad-smisioto-modules)
     test_kicad_smisioto_modules
     ;;
+  libindi-atik-bin)
+    test_libindi_atik_bin
+    ;;
+  libnova14-compat)
+    test_libnova14_compat
+    ;;
   libsnl-svn)
     test_libsnl_svn
     ;;
@@ -279,26 +254,8 @@ case $1 in
   makedumpfile)
     test_makedumpfile
     ;;
-  paraview-salome--git)
-    test_paraview_salome_git
-    ;;
-  pk2-la-svn)
-    test_pk2_la_svn
-    ;;
-  salome-kernel-git)
-    test_salome_kernel_git
-    ;;
-  salome-gui-git)
-    test_salome_gui_git
-    ;;
-  salome-geom-git)
-    test_salome_geom_git
-    ;;
-  salome-geom-git)
-    test_salome_geom_git
-    ;;
-  vtk-git)
-    test_vtk_git
+  python-sewpy-git)
+    test_python_sewpy_git
     ;;
   all)
     # testing all the packages of which I am

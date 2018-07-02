@@ -1,0 +1,24 @@
+# Maintainer: Maurizio D'Addona <mauritiusdadd@gmail.com>
+
+
+pkgname="fits-viewr"
+pkgdesc="A lightwight FITS file viewer"
+pkgver=5.4
+pkgrel=1
+arch=('x86_64')
+url="https://heasarc.gsfc.nasa.gov/ftools/fv"
+license=('GPL2')
+
+source=("http://heasarc.gsfc.nasa.gov/FTP/software/lheasoft/fv/fv5.4_pc_linux64.tar.gz")
+
+sha256sums=('114dc23310b5d9987725e4af88ffdb1bf1a992102ac46569fb91fc68904d7f99')
+
+
+
+package() 
+{
+    install -d "${pkgdir}/opt/fv"
+    install -d "${pkgdir}/usr/bin"
+    cp -r "${srcdir}/fv${pkgver}/"* "${pkgdir}/opt/fv"
+    ln -s  "${pkgdir}/opt/fv/fv" "${pkgdir}/usr/bin/fv"
+}
